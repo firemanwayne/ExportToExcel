@@ -9,5 +9,5 @@ Dependencies:
 How to use Component:
 
 <code>
-	public string Test { get; set; }
+public string Test { get; set; }
 </code>
