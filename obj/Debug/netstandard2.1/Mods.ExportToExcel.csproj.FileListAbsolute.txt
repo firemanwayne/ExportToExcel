@@ -1,0 +1,12 @@
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\bin\Debug\netstandard2.1\Mods.ExportToExcel.deps.json
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\bin\Debug\netstandard2.1\Mods.ExportToExcel.dll
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\bin\Debug\netstandard2.1\Mods.ExportToExcel.pdb
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\bin\Debug\netstandard2.1\Mods.Common.dll
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\bin\Debug\netstandard2.1\Mods.Common.pdb
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.csprojAssemblyReference.cache
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.AssemblyInfoInputs.cache
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.AssemblyInfo.cs
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.csproj.CoreCompileInputs.cache
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.csproj.CopyComplete
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.dll
+C:\Users\wayne\MODs Projects\Libraries\ExportToExcel\obj\Debug\netstandard2.1\Mods.ExportToExcel.pdb

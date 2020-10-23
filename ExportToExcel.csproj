@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <ApplicationIcon />
+    <OutputType>Library</OutputType>
+    <StartupObject />
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Product>ExportToExcel</Product>
+    <PackageId>ExportToExcel</PackageId>
+    <Authors>Davis, Wayne</Authors>
+    <IsPackable>true</IsPackable>
+     <Version>1.0.0</Version>
+    <Description>Library that allows data to be exported to an Excel Spreadsheet</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0-rc.2.20475.5" />
+    <PackageReference Include="NPOI" Version="2.5.1" />
+  </ItemGroup>   
+
+</Project>

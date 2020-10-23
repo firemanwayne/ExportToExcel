@@ -1,0 +1,11 @@
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.AssemblyInfoInputs.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.AssemblyInfo.cs
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.csproj.CoreCompileInputs.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\bin\Debug\net5.0\ExportToExcel.deps.json
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\bin\Debug\net5.0\ExportToExcel.dll
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\bin\Debug\net5.0\ref\ExportToExcel.dll
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\bin\Debug\net5.0\ExportToExcel.pdb
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.dll
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ref\ExportToExcel.dll
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.pdb
