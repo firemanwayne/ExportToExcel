@@ -9,3 +9,17 @@ C:\Users\wayne\source\repos\Blazor\ExportToExcel\bin\Debug\net5.0\ExportToExcel.
 C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.dll
 C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ref\ExportToExcel.dll
 C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.pdb
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.RazorComponent.input.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\RazorDeclaration\Components\ExcelExport.razor.g.cs
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\RazorDeclaration\Components\_Imports.razor.g.cs
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.RazorComponent.output.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\RazorDeclaration\ExportToExcel.dll
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.TagHelpers.input.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.TagHelpers.output.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.RazorCoreGenerate.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\Razor\Components\ExcelExport.razor.g.cs
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\Razor\Components\_Imports.razor.g.cs
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\staticwebassets\ExportToExcel.StaticWebAssets.Manifest.cache
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\staticwebassets\ExportToExcel.StaticWebAssets.xml
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\scopedcss\bundle\ExportToExcel.styles.css
+C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\ExportToExcel.RazorTargetAssemblyInfo.cache

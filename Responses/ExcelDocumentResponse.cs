@@ -30,6 +30,11 @@ namespace ExportToExcel
         public string FileName { get; }
 
         /// <summary>
+        /// Uri where the spreadsheet is stored
+        /// </summary>
+        public Uri FileUri { get; }
+
+        /// <summary>
         /// Content type of the spreadsheet
         /// </summary>
         public string ContentType { get; }

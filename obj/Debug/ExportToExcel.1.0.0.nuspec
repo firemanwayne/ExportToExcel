@@ -8,12 +8,23 @@
     <description>Library that allows data to be exported to an Excel Spreadsheet</description>
     <dependencies>
       <group targetFramework="net5.0">
-        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="3.1.9" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Extensions.DependencyInjection.Abstractions" version="5.0.0-rc.2.20475.5" exclude="Build,Analyzers" />
         <dependency id="NPOI" version="2.5.1" exclude="Build,Analyzers" />
       </group>
     </dependencies>
+    <frameworkReferences>
+      <group targetFramework="net5.0">
+        <frameworkReference name="Microsoft.AspNetCore.App" />
+      </group>
+    </frameworkReferences>
   </metadata>
   <files>
     <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\bin\Debug\net5.0\ExportToExcel.dll" target="lib\net5.0\ExportToExcel.dll" />
+    <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\staticwebassets\msbuild.ExportToExcel.Microsoft.AspNetCore.StaticWebAssets.props" target="build\Microsoft.AspNetCore.StaticWebAssets.props" />
+    <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\staticwebassets\msbuild.build.ExportToExcel.props" target="build\ExportToExcel.props" />
+    <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\staticwebassets\msbuild.buildMultiTargeting.ExportToExcel.props" target="buildMultiTargeting\ExportToExcel.props" />
+    <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\obj\Debug\net5.0\staticwebassets\msbuild.buildTransitive.ExportToExcel.props" target="buildTransitive\ExportToExcel.props" />
+    <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\wwwroot\ExportToExcel.js" target="staticwebassets\ExportToExcel.js" />
+    <file src="C:\Users\wayne\source\repos\Blazor\ExportToExcel\wwwroot\ExportToExcel.js.map" target="staticwebassets\ExportToExcel.js.map" />
   </files>
 </package>

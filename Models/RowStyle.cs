@@ -3,7 +3,7 @@ using NPOI.SS.UserModel;
 using System;
 using System.Linq.Expressions;
 
-namespace ExportToExcel.Models
+namespace ExportToExcel
 {
     public class RowStyle
     {
@@ -29,7 +29,6 @@ namespace ExportToExcel.Models
             return RowCellStyle;
         }
     }
-
     public class RowStyleExpression<T>
     {
         public Expression<Func<T, bool>> EvaluatedExpression { get; private set; }
@@ -48,7 +47,7 @@ namespace ExportToExcel.Models
                 EvaluatedExpression = x => EvaluateDates(time, time1, Operator);
         }
 
-        private bool EvaluateDates(DateTime Date1, DateTime Date2, OperationOperatorEnum Operator)
+        private static bool EvaluateDates(DateTime Date1, DateTime Date2, OperationOperatorEnum Operator)
         {
             if (Operator == OperationOperatorEnum.GreaterThan)
                 return Date1 == Date2;
@@ -61,7 +60,7 @@ namespace ExportToExcel.Models
 
             return false;
         }
-        private bool EvaluateInts(int Value1, int Value2, OperationOperatorEnum Operator)
+        private static bool EvaluateInts(int Value1, int Value2, OperationOperatorEnum Operator)
         {
             if (Operator == OperationOperatorEnum.GreaterThan)
                 return Value1 == Value2;

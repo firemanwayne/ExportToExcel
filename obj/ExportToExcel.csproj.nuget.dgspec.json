@@ -44,6 +44,12 @@
               "target": "Package",
               "version": "[5.0.0-rc.2.20475.5, )"
             },
+            "Microsoft.TypeScript.MSBuild": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.0.3, )"
+            },
             "NPOI": {
               "target": "Package",
               "version": "[2.5.1, )"
@@ -60,6 +66,9 @@
           "assetTargetFallback": true,
           "warn": true,
           "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }

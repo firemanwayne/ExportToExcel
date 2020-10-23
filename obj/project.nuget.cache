@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "VkbDCJ+89FOtINKvs4x97WJkO2IvM6FgYnQ0C9i0stup5DmrrSNGHAYf70Z5ArxFUeDE/4QkRjA80BxSao0lKQ==",
+  "dgSpecHash": "/7kyy78/G4aTJjTn9IBCvtH8FKq5mPoav3k5wC53ZwtUHVZjFXpElbmJy6foxeCR/1mdRfSOoPILryyZjyaEgw==",
   "success": true,
   "projectFilePath": "C:\\Users\\wayne\\source\\repos\\Blazor\\ExportToExcel\\ExportToExcel.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\wayne\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\5.0.0-rc.2.20475.5\\microsoft.extensions.dependencyinjection.abstractions.5.0.0-rc.2.20475.5.nupkg.sha512",
     "C:\\Users\\wayne\\.nuget\\packages\\microsoft.netcore.platforms\\2.0.0\\microsoft.netcore.platforms.2.0.0.nupkg.sha512",
+    "C:\\Users\\wayne\\.nuget\\packages\\microsoft.typescript.msbuild\\4.0.3\\microsoft.typescript.msbuild.4.0.3.nupkg.sha512",
     "C:\\Users\\wayne\\.nuget\\packages\\microsoft.win32.systemevents\\4.5.0\\microsoft.win32.systemevents.4.5.0.nupkg.sha512",
     "C:\\Users\\wayne\\.nuget\\packages\\npoi\\2.5.1\\npoi.2.5.1.nupkg.sha512",
     "C:\\Users\\wayne\\.nuget\\packages\\portable.bouncycastle\\1.8.6\\portable.bouncycastle.1.8.6.nupkg.sha512",

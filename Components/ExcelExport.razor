@@ -1,0 +1,85 @@
+﻿
+@typeparam TValue
+
+
+<button @onclick="HandleExport" style="@CssStyle" type="button" class="@CssClass" title="@Title">@ButtonText</button>
+
+@code{
+    [Parameter] public string CssStyle { get; set; }
+
+    [Parameter] public string CssClass { get; set; } = "btn btn-outline-success";
+
+    [Parameter] public string Title { get; set; } = "Export To Excel";
+
+    [Parameter] public object ButtonText { get; set; }
+
+    [Parameter] public string ReportName { get; set; } = $"{DateTime.UtcNow:MMddyyyyhhmmss}";
+
+    [Parameter] public Func<Task<ExcelDocumentRequest<TValue>>> Request { get; set; }
+
+    [Parameter] public UploadFileEventHandler DownloadToBrowser { get; set; }
+
+    [Inject] protected IJSRuntime JsRuntime { get; set; }
+
+    [Inject] public IExportToExcel<TValue> ExcelService { get; set; }
+
+    ExcelDocumentRequest<TValue> ExcelRequest { get; set; }
+
+    async void HandleExport()
+    {
+        if (Request != null)
+        {
+            this.ExcelRequest = await this.Request?.Invoke();
+
+            await Export();
+        }
+    }
+
+    async Task Export()
+    {
+        try
+        {
+            if (ExcelRequest.ItemsToExport != null)
+            {
+                var HeaderStyle = new HeaderStyle
+                {
+                    BackgroundColor = new HSSFColor.Grey25Percent(),
+                    FillPattern = FillPattern.SolidForeground,
+                    ForegroundColor = new HSSFColor.DarkRed(),
+                    HorizontalAlignment = HorizontalAlignment.CenterSelection,
+                    VerticalAlignment = VerticalAlignment.Distributed
+                };
+                var BodyStyle = new BodyStyle
+                {
+                    HorizontalAlignment = HorizontalAlignment.CenterSelection,
+                    VerticalAlignment = VerticalAlignment.Distributed
+                };
+
+                var request = new ExcelDocumentRequest<TValue>(ReportName, ExcelRequest.ItemsToExport, HeaderStyle, BodyStyle);
+
+                var response = await ExcelService.ExportToExcel(request);
+
+                await Download(response);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    async Task Download(ExcelDocumentResponse response)
+    {
+        try
+        {
+            var r = await DownloadToBrowser?.Invoke(response);
+
+            if (r != null)
+                await JsRuntime.InvokeVoidAsync("ExportFileToUri", r.FileName, r.FileUri);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+}

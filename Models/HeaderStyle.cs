@@ -2,7 +2,7 @@
 using NPOI.SS.UserModel;
 using System;
 
-namespace ExportToExcel.Models
+namespace ExportToExcel
 {
     public class HeaderStyle
     {
