@@ -1,11 +1,21 @@
 ﻿using System;
 
-namespace ExportToExcel.Models.Concrete
+namespace ExportToExcel
 {
-    public record UploadFileResponse
+    public abstract record UploadResponse
     {
-        public Uri FileUri { get; }
+        public string FileName { get; init; }
+        public string ContentType { get; init; }
+    }
 
-        public string FileName { get; }
+    public record UploadFileResponse : UploadResponse
+    {
+        public Uri FileUri { get; init; }
+
+    }
+
+    public record UploadFileLocalResponse : UploadResponse
+    {
+        public string FileContent { get; init; }
     }
 }

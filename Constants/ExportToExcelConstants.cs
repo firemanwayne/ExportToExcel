@@ -1,7 +1,7 @@
 ﻿namespace ExportToExcel
 {
-    internal static class ExcelConstants
+    public static class ExcelConstants
     {
-        public static string ContentType => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+        public const string ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
     }
 }

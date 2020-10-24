@@ -25,6 +25,9 @@
 
     ExcelDocumentRequest<TValue> ExcelRequest { get; set; }
 
+    string ExportUriFunctionName => "ExportFileToUri";
+    string ExportLocalFunctionName => "ExportFile";
+
     async void HandleExport()
     {
         if (Request != null)
@@ -74,8 +77,12 @@
         {
             var r = await DownloadToBrowser?.Invoke(response);
 
-            if (r != null)
-                await JsRuntime.InvokeVoidAsync("ExportFileToUri", r.FileName, r.FileUri);
+            if (r is UploadFileResponse f)
+                await JsRuntime.InvokeVoidAsync(ExportUriFunctionName, f.FileName, f.FileUri);
+
+            else if (r is UploadFileLocalResponse l)
+                await JsRuntime.InvokeVoidAsync(ExportLocalFunctionName, l.FileName, l.FileContent, l.ContentType);
+
         }
         catch (Exception ex)
         {
