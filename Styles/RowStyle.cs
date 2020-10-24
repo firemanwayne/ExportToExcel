@@ -74,5 +74,6 @@ namespace ExportToExcel
             return false;
         }
     }
+
     public enum OperationOperatorEnum { Equals, GreaterThan, LessThan }
 }
