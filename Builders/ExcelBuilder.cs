@@ -15,11 +15,10 @@ namespace ExportToExcel
         /// <param name="FileName">Spreadsheet's file name</param>
         /// <param name="Body">Body of the spreadsheet</param>
         /// <param name="Header">Header of the Spreadsheet</param>
-        public static void Build<T>(in IWorkbook WorkBook, string FileName, BodyBuilder<T> Body, HeaderBuilder<T> Header)
+        public static void Build<T>(string FileName, BodyBuilder<T> Body, HeaderBuilder<T> Header)
         {
-            var Sheet = Header.BuildHeaderWithReflection(FileName, WorkBook);
-
-            Body.BuildBody(Sheet);
+            var Sheet = Header.Build(FileName);
+            Body.Build(Sheet);
         }
     }
 }

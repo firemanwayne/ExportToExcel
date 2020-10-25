@@ -19,6 +19,32 @@ namespace ExportToExcel
         /// <param name="ItemsToExport">Data to be exported</param>
         /// <param name="HeaderStyle">Header row's style</param>
         /// <param name="BodyStyle">Style of the body rows</param>
+        public ExcelDocumentRequest(string FileName, Func<IEnumerable<T>> DataDelegate, HeaderStyle HeaderStyle = null, BodyStyle BodyStyle = null)
+        {
+            Workbook = new XSSFWorkbook();
+
+            ItemsToExport = DataDelegate?.Invoke() ?? throw new ArgumentNullException($"{nameof(ItemsToExport)}: you provided nothing to export");
+
+            this.HeaderStyle = HeaderStyle ?? new HeaderStyle();
+            this.BodyStyle = BodyStyle ?? new BodyStyle();
+
+
+            if (MimeMapping.IsExtensionMissing(FileName))
+                this.FileName = FileName += ".xlsx";
+            else
+                this.FileName = FileName;
+
+            this.HeaderStyle.GenerateStyleObject(Workbook);
+            this.BodyStyle.GenerateStyleObject(Workbook);
+        }
+
+        /// <summary>
+        /// Creates a request object thats used to export data into a spreadsheet
+        /// </summary>
+        /// <param name="FileName">Filename of the spreadsheet</param>
+        /// <param name="ItemsToExport">Data to be exported</param>
+        /// <param name="HeaderStyle">Header row's style</param>
+        /// <param name="BodyStyle">Style of the body rows</param>
         public ExcelDocumentRequest(string FileName, IEnumerable<T> ItemsToExport, HeaderStyle HeaderStyle = null, BodyStyle BodyStyle = null)
         {
             Workbook = new XSSFWorkbook();

@@ -29,12 +29,13 @@ namespace ExportToExcel
             }
         }
 
-        private static void BuildSpreadsheet(ExcelDocumentRequest<T> Request)
+        static void BuildSpreadsheet(ExcelDocumentRequest<T> Request)
         {
-            var header = new HeaderBuilder<T>(Request.HeaderStyle, Request.Workbook);
-            var body = new BodyBuilder<T>(Request.ItemsToExport, Request.BodyStyle, Request.Workbook, Request.HeaderStyle);
+            var header = new HeaderBuilder<T>(Request);
 
-            ExcelBuilder.Build<T>(Request.Workbook, Request.FileName, body, header);
+            var body = new BodyBuilder<T>(Request, header);
+
+            ExcelBuilder.Build<T>(Request.FileName, body, header);
         }
     }
 }
