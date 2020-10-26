@@ -19,7 +19,7 @@ namespace ExportToExcel
             BodyStyle = Request.BodyStyle;
             DataItems = Request.ItemsToExport;
             this.Header = Header;
-            HeaderCellStyle = Request.HeaderStyle.HeaderCellStyle ?? Request.HeaderStyle.GenerateStyleObject(Request.Workbook);
+            HeaderCellStyle = Request.HeaderStyle.CellStyle ?? Request.HeaderStyle.GenerateStyleObject(Request.Workbook);
             BodyCellStyle = BodyStyle.GenerateStyleObject(Request.Workbook);
         }
 
@@ -28,7 +28,7 @@ namespace ExportToExcel
             this.BodyStyle = BodyStyle;
             this.DataItems = DataItems;
             this.Header = Header;
-            HeaderCellStyle = HeaderStyle.HeaderCellStyle ?? HeaderStyle.GenerateStyleObject(workBook);
+            HeaderCellStyle = HeaderStyle.CellStyle ?? HeaderStyle.GenerateStyleObject(workBook);
             BodyCellStyle = BodyStyle.GenerateStyleObject(workBook);
         }
 
@@ -38,7 +38,7 @@ namespace ExportToExcel
         {
             this.ExcelSheet = ExcelSheet;
 
-            BodyCellStyle = BodyStyle.BodyCellStyle;
+            BodyCellStyle = BodyStyle.CellStyle;
             var RowCount = 1;
 
             foreach (var item in DataItems)

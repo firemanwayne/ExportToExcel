@@ -1,0 +1,36 @@
+﻿@using ExportToExcel
+
+@code {
+    [Parameter] public EventCallback<HorizontalAlignmentChangedEventArgs> OnSelected { get; set; }
+
+    HorizontalAlignment halign;
+
+    HorizontalAlignment HAlignment
+    {
+        get => halign;
+        set 
+        {
+            halign = value;
+            HandleChange();
+        }
+    }
+
+
+    void HandleChange()
+    {
+        if (OnSelected.HasDelegate)
+            OnSelected.InvokeAsync(new HorizontalAlignmentChangedEventArgs(HAlignment));
+    }
+}
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Horizontal Alignment</span>
+    </div>
+    <select class="form-control" @bind="HAlignment">
+        <option value="">Select Alignment</option>
+        <option value="@HorizontalAlignment.Center">Center</option>
+        <option value="@HorizontalAlignment.Left">Left</option>
+        <option value="@HorizontalAlignment.Right">Right</option>
+    </select>
+</div>

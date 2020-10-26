@@ -1,0 +1,35 @@
+﻿@using ExportToExcel
+
+@code {
+    [Parameter] public EventCallback<VerticalAlignmentChangedEventArgs> OnSelected { get; set; }
+
+    VerticalAlignment vAlign;
+
+    VerticalAlignment VAlignment
+    {
+        get => vAlign;
+        set 
+        {
+            vAlign = value;
+            HandleChange();
+        }
+    }
+
+    void HandleChange()
+    {
+        if (OnSelected.HasDelegate)
+            OnSelected.InvokeAsync(new VerticalAlignmentChangedEventArgs(VAlignment));
+    }
+}
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Vertical Alignment</span>
+    </div>
+    <select class="form-control" @bind="VAlignment">
+        <option value="">Select Alignment</option>
+        <option value="@VerticalAlignment.Center">Center</option>
+        <option value="@VerticalAlignment.Top">Top</option>
+        <option value="@VerticalAlignment.Bottom">Bottom</option>
+    </select>
+</div>

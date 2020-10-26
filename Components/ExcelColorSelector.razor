@@ -1,0 +1,41 @@
+﻿
+@using ExportToExcel
+@using ExportToExcel.Styles
+
+@code {
+    short selectedIndex;
+
+    short SelectedIndex
+    {
+        get => selectedIndex;
+        set
+        {
+            selectedIndex = value;
+            HandleSelectChange();
+        }
+    }
+
+    [Parameter] public EventCallback<StyleColorSelectedEventArgs> OnColorSelected { get; set; }
+
+    void HandleSelectChange()
+    {
+        var selectedColor = ExcelColors.ColorCollection.FirstOrDefault(a => a.Key.Equals(SelectedIndex));
+
+        if (OnColorSelected.HasDelegate)
+            if (selectedColor.Value != null)
+                OnColorSelected.InvokeAsync(new StyleColorSelectedEventArgs(selectedColor.Value));
+    }
+}
+
+<div class="input-group mb-3">
+    <div class="input-group-prepend">
+        <span class="input-group-text">Background Color</span>
+    </div>
+    <select class="form-control" @bind="SelectedIndex">
+        <option value="0">Select Color</option>
+        @foreach (var item in ExcelColors.ColorCollection)
+        {
+            <option style="background-color:@item.Value.RGBValue" value="@item.Key">@item.Value.Name</option>
+        }
+    </select>
+</div>

@@ -4,7 +4,7 @@
 @using NPOI.XSSF.UserModel
 @using System.Drawing 
 
-<button @onclick="HandleExport" style="@CssStyle" type="button" class="@CssClass" title="@Title">@ButtonText</button>
+<button type="button" @onclick="HandleExport" style="@CssStyle" class="@CssClass" title="@Title">@ButtonText</button>
 
 @code{
     [Parameter] public string CssStyle { get; set; }
