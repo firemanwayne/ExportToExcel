@@ -22,20 +22,17 @@ namespace ExportToExcel
         {
             EntityType = typeof(T);
             workBook = Request.Workbook;
-            HeaderStyle = Request.HeaderStyle;
-            CellStyle = HeaderStyle.GenerateStyleObject(workBook);
+            CellStyle = Request.HeaderStyle.GenerateStyleObject(workBook);
         }
 
         public HeaderBuilder(HeaderStyle HeaderStyle, IWorkbook workBook)
         {
             EntityType = typeof(T);
             this.workBook = workBook;
-            this.HeaderStyle = HeaderStyle;
             CellStyle = HeaderStyle.GenerateStyleObject(workBook);
         }
 
         public Type EntityType { get; }
-        public HeaderStyle HeaderStyle { get; }
         public IEnumerable<PropertyInfo> ColumnProperties { get => columnProperties; }
         public IEnumerable<ICell> HeaderCells { get => headerCells; }
 

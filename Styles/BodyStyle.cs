@@ -1,6 +1,7 @@
-﻿using NPOI.HSSF.Util;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
+using NPOI.XSSF.UserModel;
 using System;
+using System.Drawing;
 
 namespace ExportToExcel
 {
@@ -11,12 +12,12 @@ namespace ExportToExcel
         /// <summary>
         /// Foreground Color. Text Color
         /// </summary>
-        public HSSFColor ForegroundColor { get; set; } = new HSSFColor.White();
+        public XSSFColor ForegroundColor { get; set; } = new XSSFColor(Color.Black);
 
         /// <summary>
         /// Background Color. Default is white
         /// </summary>
-        public HSSFColor BackgroundColor { get; set; } = new HSSFColor.White();
+        public XSSFColor BackgroundColor { get; set; } = new XSSFColor(Color.Transparent);
 
         /// <summary>
         /// Fill Pattern
@@ -53,13 +54,7 @@ namespace ExportToExcel
         /// </summary>
         public HorizontalAlignment HorizontalAlignment { get; set; } = HorizontalAlignment.Center;
 
-        public ICellStyle BodyCellStyle { get; private set; }
-
-        public void ChangeBackgroundColor(HSSFColor Color)
-        {
-            ForegroundColor = Color;
-            GenerateStyleObject(workbook);
-        }
+        public ICellStyle BodyCellStyle { get; private set; }        
 
         public ICellStyle GenerateStyleObject(in IWorkbook workbook)
         {

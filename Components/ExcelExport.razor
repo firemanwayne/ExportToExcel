@@ -1,6 +1,8 @@
 ﻿
 @typeparam TValue
 
+@using NPOI.XSSF.UserModel
+@using System.Drawing 
 
 <button @onclick="HandleExport" style="@CssStyle" type="button" class="@CssClass" title="@Title">@ButtonText</button>
 
@@ -15,13 +17,17 @@
 
     [Parameter] public string ReportName { get; set; } = $"{DateTime.UtcNow:MMddyyyyhhmmss}";
 
-    [Parameter] public Func<Task<ExcelDocumentRequest<TValue>>> Request { get; set; }
+    [Parameter] public HeaderStyle HeaderStyle { get; set; }
+
+    [Parameter] public BodyStyle BodyStyle { get; set; }
+
+    [Parameter] public Func<IEnumerable<TValue>> RequestDelegate { get; set; }
 
     [Parameter] public UploadFileEventHandler DownloadToBrowser { get; set; }
 
-    [Inject] protected IJSRuntime JsRuntime { get; set; }
+    [Inject] IJSRuntime JsRuntime { get; set; }
 
-    [Inject] public IExportToExcel<TValue> ExcelService { get; set; }
+    [Inject] IExportToExcel<TValue> ExcelService { get; set; }
 
     ExcelDocumentRequest<TValue> ExcelRequest { get; set; }
 
@@ -30,40 +36,20 @@
 
     async void HandleExport()
     {
-        if (Request != null)
-        {
-            this.ExcelRequest = await this.Request?.Invoke();
-
+        if (RequestDelegate != null)
             await Export();
-        }
     }
 
     async Task Export()
     {
         try
-        {
-            if (ExcelRequest.ItemsToExport != null)
-            {
-                var HeaderStyle = new HeaderStyle
-                {
-                    BackgroundColor = new HSSFColor.Grey25Percent(),
-                    FillPattern = FillPattern.SolidForeground,
-                    ForegroundColor = new HSSFColor.DarkRed(),
-                    HorizontalAlignment = HorizontalAlignment.CenterSelection,
-                    VerticalAlignment = VerticalAlignment.Distributed
-                };
-                var BodyStyle = new BodyStyle
-                {
-                    HorizontalAlignment = HorizontalAlignment.CenterSelection,
-                    VerticalAlignment = VerticalAlignment.Distributed
-                };
+        {            
+            var request = new ExcelDocumentRequest<TValue>(ReportName, RequestDelegate?.Invoke(), HeaderStyle, BodyStyle);
 
-                var request = new ExcelDocumentRequest<TValue>(ReportName, ExcelRequest.ItemsToExport, HeaderStyle, BodyStyle);
+            var response = await ExcelService.ExportToExcel(request);
 
-                var response = await ExcelService.ExportToExcel(request);
+            await Download(response);
 
-                await Download(response);
-            }
         }
         catch (Exception ex)
         {
