@@ -6,8 +6,18 @@ Dependencies:
 
 -NPOI Contributors version: 2.5.1 https://github.com/nissl-lab/npoi
 
-How to use Component:
+Implementation:
+
+Start by calling the registry method when you are configuring your services:
 
 <code>
-public string Test { get; set; }
+ services.AddExportToExcel();
 </code>
+
+Once added to your start up process you can use the following Components to configure the excel document before exporting it:
+
+<ExcelColorSelector OnColorSelected="HandleHeaderColorSelected" />
+
+<ExcelHorizontalAlignmentSelector OnSelected="HandleHeaderHorizontalAlignmentSelected" />
+
+<ExcelVerticalAlignmentSelector OnSelected="HandleHeaderVerticalAlignmentSelected" />
