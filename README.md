@@ -2,7 +2,7 @@
 
 Blazor Component that will Export Data in a Spreadsheet format
 
-Dependencies:
+**Dependencies:**
 
 -NPOI Contributors version: 2.5.1 https://github.com/nissl-lab/npoi
 
@@ -23,4 +23,40 @@ Once added to your start up process you can use the following Components to conf
 
 <ExcelVerticalAlignmentSelector OnSelected="HandleHeaderVerticalAlignmentSelected" />
 
+```
+
+The event callbacks in the components are used to set the values of your Export Style objects:
+
+ Configures the style of the header
+```csharp
+ void HandleHeaderColorSelected(StyleColorSelectedEventArgs a)
+ {
+     HeaderStyle.SetForegroundColor(a);
+ }
+ void HandleBodyColorSelected(StyleColorSelectedEventArgs a)
+ {
+     BodyStyle.SetForegroundColor(a);
+ }
+ void HandleHeaderHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a)
+ {
+     HeaderStyle.SetHorizontalAlignment(a);
+ }
+ ```
+ Configures the style of the body
+
+ ```csharp
+ void HandleBodyHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a)
+ {
+     BodyStyle.SetHorizontalAlignment(a);
+ }
+
+ void HandleHeaderVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a)
+ {
+     HeaderStyle.SetVerticalAlignment(a);
+ }
+
+ void HandleBodyVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a)
+ {
+     BodyStyle.SetVerticalAlignment(a);
+ }
 ```
