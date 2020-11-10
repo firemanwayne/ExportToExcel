@@ -3,6 +3,7 @@
 
 @using NPOI.XSSF.UserModel
 @using System.Drawing
+@using ExportToExcel.Infrastructure
 
 <button type="button" @onclick="HandleExport" style="@CssStyle" class="@CssClass" title="@Title">@ButtonText</button>
 
@@ -25,14 +26,11 @@
 
     [Parameter] public UploadFileEventHandler DownloadToBrowser { get; set; }
 
-    [Inject] IJSRuntime JsRuntime { get; set; }
+    [Inject] ExcelDownloadService DownloadService { get; set; }
 
     [Inject] IExportToExcel<TValue> ExcelService { get; set; }
 
-    ExcelDocumentRequest<TValue> ExcelRequest { get; set; }
-
-    string ExportUriFunctionName => "ExportFileToUri";
-    string ExportLocalFunctionName => "ExportFile";
+    ExcelDocumentRequest<TValue> ExcelRequest { get; set; }   
 
     async void HandleExport()
     {
@@ -43,7 +41,7 @@
     async Task Export()
     {
         try
-        {            
+        {
             var request = new ExcelDocumentRequest<TValue>(ReportName, RequestDelegate?.Invoke(), HeaderStyle, BodyStyle);
 
             var response = await ExcelService.ExportToExcel(request);
@@ -63,12 +61,7 @@
         {
             var r = await DownloadToBrowser?.Invoke(response);
 
-            if (r is UploadFileResponse f)
-                await JsRuntime.InvokeVoidAsync(ExportUriFunctionName, f.FileName, f.FileUri);
-
-            else if (r is UploadFileLocalResponse l)
-                await JsRuntime.InvokeVoidAsync(ExportLocalFunctionName, l.FileName, l.FileContent, l.ContentType);
-
+            await DownloadService.ExportFile(r);
         }
         catch (Exception ex)
         {

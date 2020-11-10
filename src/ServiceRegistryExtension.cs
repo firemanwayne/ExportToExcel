@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ExportToExcel.Infrastructure;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ExportToExcel
 {
@@ -11,6 +12,8 @@ namespace ExportToExcel
         /// <returns></returns>
         public static void AddExportToExcel(this IServiceCollection services)
         {
+            services.AddSingleton<ExcelDownloadService>();
+
             services.AddSingleton(typeof(IExportToExcel<>), typeof(ExcelService<>));
         }
     }
