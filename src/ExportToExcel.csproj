@@ -12,12 +12,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="src\wwwroot\ExportToExcel.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="src\wwwroot\ExportToExcel.js" />
-    <Content Include="src\wwwroot\ExportToExcel.js.map" />
+    <Compile Remove="src\**" />
+    <Content Remove="src\**" />
+    <EmbeddedResource Remove="src\**" />
+    <None Remove="src\**" />
+    <TypeScriptCompile Remove="src\**" />
   </ItemGroup>
 
   <ItemGroup>
