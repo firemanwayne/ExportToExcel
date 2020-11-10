@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ExportToExcel.Infrastructure
+namespace ExportToExcel
 {
     public class ExcelDownloadService : IAsyncDisposable
     {
@@ -14,7 +14,7 @@ namespace ExportToExcel.Infrastructure
         public ExcelDownloadService(IJSRuntime JS)
         {
             moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>(
-                    "import", "./_content/ExportToExcel/ExportToExcel.js").AsTask());
+                    "import", "./_content/Simple.ExportToExcel/ToExcel.js").AsTask());
         }
 
         public async ValueTask ExportFile(UploadResponse Response)

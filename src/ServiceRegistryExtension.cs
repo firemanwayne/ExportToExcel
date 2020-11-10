@@ -1,5 +1,4 @@
-﻿using ExportToExcel.Infrastructure;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 
 namespace ExportToExcel
 {

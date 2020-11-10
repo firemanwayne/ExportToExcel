@@ -1,6 +1,4 @@
-﻿@using ExportToExcel
-
-@code {
+﻿@code {
     [Parameter] public EventCallback<HorizontalAlignmentChangedEventArgs> OnSelected { get; set; }
 
     HorizontalAlignment halign;
@@ -28,7 +26,7 @@
         <span class="input-group-text">Horizontal Alignment</span>
     </div>
     <select class="form-control" @bind="HAlignment">
-        <option value="">Select Alignment</option>
+        <option value="@string.Empty">Select Alignment</option>
         <option value="@HorizontalAlignment.Center">Center</option>
         <option value="@HorizontalAlignment.Left">Left</option>
         <option value="@HorizontalAlignment.Right">Right</option>

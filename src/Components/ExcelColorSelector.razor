@@ -1,8 +1,4 @@
-﻿
-@using ExportToExcel
-@using ExportToExcel.Styles
-
-@code {
+﻿@code {
     short selectedIndex;
 
     short SelectedIndex
@@ -32,7 +28,7 @@
         <span class="input-group-text">Background Color</span>
     </div>
     <select class="form-control" @bind="SelectedIndex">
-        <option value="0">Select Color</option>
+        <option value="@string.Empty">Select Color</option>
         @foreach (var item in ExcelColors.ColorCollection)
         {
             <option style="background-color:@item.Value.RGBValue" value="@item.Key">@item.Value.Name</option>
