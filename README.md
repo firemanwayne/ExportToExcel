@@ -64,6 +64,7 @@ The event callbacks in the components are used to set the values of your Export 
 
 Here is an example of using the ExportToExcel component:
 
+```csharp
 [Parameter] ButtonText = Sets the text that will be displayed on the Export Button
 [Parameter] CssClass = 
 [Parameter] ReportName = 
@@ -72,6 +73,7 @@ Here is an example of using the ExportToExcel component:
 [Parameter] BodyStyle = 
 [Parameter] RequestDelegate = 
 [Parameter] DownloadToBrowser = 
+```
 
 ```html
 
