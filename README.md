@@ -22,27 +22,28 @@ Once added to your start up process you can use the following Components to conf
 <ExcelHorizontalAlignmentSelector OnSelected="HandleHeaderHorizontalAlignmentSelected" />
 
 <ExcelVerticalAlignmentSelector OnSelected="HandleHeaderVerticalAlignmentSelected" />
-
 ```
 
 The event callbacks in the components are used to set the values of your Export Style objects:
 
- Configures the style of the header
+ Configures the style of the header:
 ```csharp
  void HandleHeaderColorSelected(StyleColorSelectedEventArgs a)
  {
      HeaderStyle.SetForegroundColor(a);
  }
- void HandleBodyColorSelected(StyleColorSelectedEventArgs a)
+
+ void HandleHeaderVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a)
  {
-     BodyStyle.SetForegroundColor(a);
+     HeaderStyle.SetVerticalAlignment(a);
  }
+
  void HandleHeaderHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a)
  {
      HeaderStyle.SetHorizontalAlignment(a);
  }
  ```
- Configures the style of the body
+ Configures the style of the body:
 
  ```csharp
  void HandleBodyHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a)
@@ -50,9 +51,9 @@ The event callbacks in the components are used to set the values of your Export 
      BodyStyle.SetHorizontalAlignment(a);
  }
 
- void HandleHeaderVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a)
+ void HandleBodyColorSelected(StyleColorSelectedEventArgs a)
  {
-     HeaderStyle.SetVerticalAlignment(a);
+     BodyStyle.SetForegroundColor(a);
  }
 
  void HandleBodyVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a)
