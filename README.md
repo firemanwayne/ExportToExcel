@@ -61,3 +61,28 @@ The event callbacks in the components are used to set the values of your Export 
      BodyStyle.SetVerticalAlignment(a);
  }
 ```
+
+Here is an example of using the ExportToExcel component:
+
+[Parameter] ButtonText = Sets the text that will be displayed on the Export Button
+[Parameter] CssClass = 
+[Parameter] ReportName = 
+[Parameter] TValue = Type of object that is being used
+[Parameter] HeaderStyle = 
+[Parameter] BodyStyle = 
+[Parameter] RequestDelegate = 
+[Parameter] DownloadToBrowser = 
+
+```html
+
+<ExcelExport 
+ButtonText=UserButtonText
+CssClass="btn btn-outline-success" 
+ReportName=@UserReportName
+TValue="UserSpreadSheet"
+HeaderStyle="HeaderStyle" 
+BodyStyle="BodyStyle" 
+RequestDelegate="ExportUserRequest"
+DownloadToBrowser="DownloadFile" />
+
+```
