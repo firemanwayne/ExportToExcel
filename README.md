@@ -1,6 +1,6 @@
-# Blazor Export-To-Excel Component
+# Simple Blazor Export-To-Excel Component
 
-Blazor Component that will Export Data in a Spreadsheet format
+Simple Blazor Component that will Export Data in a Spreadsheet format
 
 **Dependencies:**
 
@@ -66,12 +66,12 @@ Here is an example of using the ExportToExcel component:
 
 ```csharp
 [Parameter] ButtonText = Sets the text that will be displayed on the Export Button
-[Parameter] CssClass = 
-[Parameter] ReportName = 
+[Parameter] CssClass = Sets the Css Class for the Export Button
+[Parameter] ReportName = The name that you would like the report to be saved as
 [Parameter] TValue = Type of object that is being used
-[Parameter] HeaderStyle = 
-[Parameter] BodyStyle = 
-[Parameter] RequestDelegate = 
+[Parameter] HeaderStyle = Header style instance used to configure the style of the header
+[Parameter] BodyStyle = Body style instance used to configure the style of the body
+[Parameter] RequestDelegate = Func<IEnumerable<TValue>> method that will retrive a list of the specified TValue
 [Parameter] DownloadToBrowser = 
 ```
 
