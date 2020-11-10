@@ -12,7 +12,7 @@ namespace ExportToExcel
         /// <returns></returns>
         public static void AddExportToExcel(this IServiceCollection services)
         {
-            services.AddSingleton<ExcelDownloadService>();
+            services.AddScoped<ExcelDownloadService>();
 
             services.AddSingleton(typeof(IExportToExcel<>), typeof(ExcelService<>));
         }
