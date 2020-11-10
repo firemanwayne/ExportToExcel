@@ -8,7 +8,7 @@
     <ShowAllFiles>false</ShowAllFiles>
   </PropertyGroup>
   <ItemGroup>
-    <TypeScriptCompile Update="wwwroot\ExportToExcel.ts">
+    <TypeScriptCompile Update="src\wwwroot\ExportToExcel.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
   </ItemGroup>

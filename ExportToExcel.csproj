@@ -12,7 +12,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\ExportToExcel.ts" />
+    <Content Remove="src\wwwroot\ExportToExcel.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="src\wwwroot\ExportToExcel.js" />
+    <Content Include="src\wwwroot\ExportToExcel.js.map" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,10 +28,6 @@
     </PackageReference>
     <PackageReference Include="NPOI" Version="2.5.1" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="5.0.0-rc.2.20475.17" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <TypeScriptCompile Include="wwwroot\ExportToExcel.ts" />
   </ItemGroup>   
 
 </Project>
