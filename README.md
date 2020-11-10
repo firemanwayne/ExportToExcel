@@ -6,7 +6,7 @@ Dependencies:
 
 -NPOI Contributors version: 2.5.1 https://github.com/nissl-lab/npoi
 
-** Implementation: **
+**Implementation:**
 
 Start by calling the registry method when you are configuring your services:
 
