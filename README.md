@@ -34,3 +34,7 @@ TValue="UserSpreadSheet"
 RequestDelegate="ExportUserRequest" />
 
 ```
+
+**Contributions**
+
+Thank you to Andre' Rizzato for discovering an implementation issue and providing a working solution.
