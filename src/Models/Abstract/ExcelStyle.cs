@@ -75,12 +75,12 @@ namespace Simple.ExportToExcel
         /// <summary>
         /// Foreground Color
         /// </summary>
-        public XSSFColor ForegroundColor { get; private set; }
+        public XSSFColor ForegroundColor { get; private set; } = new XSSFColor(IndexedColors.White);
 
         /// <summary>
         /// Background Color. Default is white
         /// </summary>
-        public XSSFColor BackgroundColor { get; private set; }
+        public XSSFColor BackgroundColor { get; private set; } = new XSSFColor(IndexedColors.White);
 
         /// <summary>
         /// Vertical Alignment

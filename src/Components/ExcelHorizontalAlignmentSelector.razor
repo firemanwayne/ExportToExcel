@@ -1,31 +1,24 @@
 ﻿@code {
     [Parameter] public EventCallback<HorizontalAlignmentChangedEventArgs> OnSelected { get; set; }
 
-    HorizontalAlignment halign;
-
-    HorizontalAlignment HAlignment
+    void HandleChange(ChangeEventArgs args)
     {
-        get => halign;
-        set 
-        {
-            halign = value;
-            HandleChange();
-        }
+        if (OnSelected.HasDelegate && args.Value != null)
+            OnSelected.InvokeAsync(new HorizontalAlignmentChangedEventArgs(Parse(args)));
     }
 
-
-    void HandleChange()
-    {
-        if (OnSelected.HasDelegate)
-            OnSelected.InvokeAsync(new HorizontalAlignmentChangedEventArgs(HAlignment));
-    }
+    static HorizontalAlignment Parse(ChangeEventArgs args)
+          => args.Value.ToString() == "Center" ? HorizontalAlignment.Center :
+          args.Value.ToString() == "Left" ? HorizontalAlignment.Left :
+          args.Value.ToString() == "Right" ? HorizontalAlignment.Right :
+          HorizontalAlignment.General;
 }
 
 <div class="input-group mb-3">
     <div class="input-group-prepend">
         <span class="input-group-text">Horizontal Alignment</span>
     </div>
-    <select class="form-control" @bind="HAlignment">
+    <select @onchange="HandleChange" class="form-control">
         <option value="">Select Alignment</option>
         <option value="@HorizontalAlignment.Center">Center</option>
         <option value="@HorizontalAlignment.Left">Left</option>

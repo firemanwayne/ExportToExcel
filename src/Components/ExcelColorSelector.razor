@@ -1,25 +1,17 @@
 ﻿@code {
-    short selectedIndex;
-
-    short SelectedIndex
-    {
-        get => selectedIndex;
-        set
-        {
-            selectedIndex = value;
-            HandleSelectChange();
-        }
-    }
-
     [Parameter] public EventCallback<StyleColorSelectedEventArgs> OnColorSelected { get; set; }
 
-    void HandleSelectChange()
+    void HandleChange(ChangeEventArgs args)
     {
-        var selectedColor = ExcelColors.ColorCollection.FirstOrDefault(a => a.Key.Equals(SelectedIndex));
+        if (!string.IsNullOrEmpty((string)args.Value))
+        {
+            var selectedIndex = short.Parse(args.Value.ToString());
+            var selectedColor = ExcelColors.ColorCollection.FirstOrDefault(a => a.Key.Equals(selectedIndex));
 
-        if (OnColorSelected.HasDelegate)
-            if (selectedColor.Value != null)
-                OnColorSelected.InvokeAsync(new StyleColorSelectedEventArgs(selectedColor.Value));
+            if (OnColorSelected.HasDelegate)
+                if (selectedColor.Value != null)
+                    OnColorSelected.InvokeAsync(new StyleColorSelectedEventArgs(selectedColor.Value));
+        }
     }
 }
 
@@ -27,8 +19,9 @@
     <div class="input-group-prepend">
         <span class="input-group-text">Background Color</span>
     </div>
-    <select class="form-control" @bind="SelectedIndex">
-        <option value="@string.Empty">Select Color</option>
+    <select class="form-control" @onchange="HandleChange">
+        <option value="">Select Color</option>
+
         @foreach (var item in ExcelColors.ColorCollection)
         {
             <option style="background-color:@item.Value.RGBValue" value="@item.Key">@item.Value.Name</option>
