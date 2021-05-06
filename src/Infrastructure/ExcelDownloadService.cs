@@ -11,11 +11,9 @@ namespace Simple.ExportToExcel
 
         readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
-        public ExcelDownloadService(IJSRuntime JS)
-        {
-            moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>(
-                    "import", "./_content/Simple.ExportToExcel/ToExcel.js").AsTask());
-        }
+        public ExcelDownloadService(IJSRuntime JS) 
+            => moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>(
+                "import", "./_content/Simple.ExportToExcel/ToExcel.js").AsTask());        
 
         public async ValueTask ExportFile(UploadResponse Response)
         {

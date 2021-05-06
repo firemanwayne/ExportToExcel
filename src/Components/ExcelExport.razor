@@ -85,6 +85,11 @@
             }
         }
 
+        /// <summary>
+        /// Andre' Rizzato's provided solution for downloading the excel spreadsheet to the browser
+        /// </summary>
+        /// <param name="excelDocument"></param>
+        /// <returns></returns>
         Task<UploadResponse> ExportFile(ExcelDocumentResponse excelDocument)
         {
             var uploadFileLocalResponse = new UploadFileLocalResponse()
