@@ -2,7 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     internal class ExcelService<T> : IExportToExcel<T>
     {
@@ -20,7 +20,7 @@ namespace ExportToExcel
                 return Task.FromResult(
                     new ExcelDocumentResponse(Request.FileName)
                     {
-                        SpreadSheetBytes = ms.ToArray(),                        
+                        SpreadSheetBytes = ms.ToArray(),
                     });
             }
             catch (Exception ex)

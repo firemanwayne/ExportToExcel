@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     /// <summary>
     /// Request object used to encapsulate parameters to generate response

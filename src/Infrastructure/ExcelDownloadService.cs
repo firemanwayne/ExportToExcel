@@ -2,14 +2,14 @@
 using System;
 using System.Threading.Tasks;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
-    public class ExcelDownloadService : IAsyncDisposable
+    internal class ExcelDownloadService : IExcelDownloadService
     {
         static string ExportUriFunctionName => "ExportFileToUri";
         static string ExportLocalFunctionName => "ExportFile";
 
-        private readonly Lazy<Task<IJSObjectReference>> moduleTask;
+        readonly Lazy<Task<IJSObjectReference>> moduleTask;
 
         public ExcelDownloadService(IJSRuntime JS)
         {

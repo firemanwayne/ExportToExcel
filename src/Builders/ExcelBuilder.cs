@@ -1,6 +1,4 @@
-﻿using NPOI.SS.UserModel;
-
-namespace ExportToExcel
+﻿namespace Simple.ExportToExcel
 {
     public class ExcelBuilder
     {

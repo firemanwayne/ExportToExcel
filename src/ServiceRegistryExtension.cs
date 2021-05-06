@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿
+using Simple.ExportToExcel;
 
-namespace ExportToExcel
+namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ServiceBusConfigurationExtension
     {
@@ -11,7 +12,7 @@ namespace ExportToExcel
         /// <returns></returns>
         public static void AddExportToExcel(this IServiceCollection services)
         {
-            services.AddScoped<ExcelDownloadService>();
+            services.AddScoped<IExcelDownloadService, ExcelDownloadService>();
 
             services.AddSingleton(typeof(IExportToExcel<>), typeof(ExcelService<>));
         }

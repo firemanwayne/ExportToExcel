@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using System.Collections.Generic;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
+    /// <summary>
+    /// Represents a spreadsheet
+    /// </summary>
     public class SpreadSheet : ImportDocument
     {
-        private readonly IList<SheetRow> rows = new List<SheetRow>();
+        readonly IList<SheetRow> rows = new List<SheetRow>();
 
         public SpreadSheet() { }
         public SpreadSheet(IBrowserFile file)
@@ -15,8 +18,8 @@ namespace ExportToExcel
             ContentType = file.ContentType;
         }
 
-        public int RowCount { get => rows.Count; }
-        public ICollection<SheetRow> DataRows { get => rows; }
+        public int RowCount => rows.Count;
+        public ICollection<SheetRow> DataRows => rows;
         public SpreadSheet AddRow(object Value)
         {
             rows.Add(new SheetRow(RowCount, Value));

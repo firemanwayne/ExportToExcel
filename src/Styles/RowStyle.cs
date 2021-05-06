@@ -3,7 +3,7 @@ using NPOI.SS.UserModel;
 using System;
 using System.Linq.Expressions;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     public class RowStyle
     {

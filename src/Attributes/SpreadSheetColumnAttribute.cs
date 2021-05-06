@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace ExportToExcel.Attributes
+namespace Simple.ExportToExcel.Attributes
 {
     [AttributeUsage(AttributeTargets.Class)]
     public class SpreadSheetAttribute : Attribute
     {
-        private IList<SpreadSheetColumnAttribute> columns = new List<SpreadSheetColumnAttribute>();
+        private readonly IList<SpreadSheetColumnAttribute> columns = new List<SpreadSheetColumnAttribute>();
 
         public SpreadSheetAttribute(string Name, Type Type) : base()
         {
@@ -22,11 +22,11 @@ namespace ExportToExcel.Attributes
         public Type Type { get; }
 
         public IEnumerable<SpreadSheetColumnAttribute> Columns { get => columns.OrderBy(c => c.ColumnIndex); }
-        
+
         void GetColumnIndexes()
         {
             var props = Type.GetProperties();
-            foreach(var p in props)
+            foreach (var p in props)
             {
                 var columnAttr = p.GetCustomAttribute<SpreadSheetColumnAttribute>();
                 if (columnAttr != null)
@@ -41,7 +41,7 @@ namespace ExportToExcel.Attributes
 
     [AttributeUsage(AttributeTargets.Property)]
     public class SpreadSheetColumnAttribute : Attribute
-    {       
+    {
         public SpreadSheetColumnAttribute(string Name, int ColumnIndex) : base()
         {
             this.Name = Name;

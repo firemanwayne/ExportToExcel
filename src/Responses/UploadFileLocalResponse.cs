@@ -1,4 +1,4 @@
-﻿namespace ExportToExcel
+﻿namespace Simple.ExportToExcel
 {
     public record UploadFileLocalResponse : UploadResponse
     {

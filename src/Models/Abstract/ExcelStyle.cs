@@ -1,9 +1,9 @@
-﻿using ExportToExcel.Styles;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
+using Simple.ExportToExcel.Styles;
 using System.Collections.Generic;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     public abstract class ExcelStyle
     {
@@ -17,7 +17,7 @@ namespace ExportToExcel
                 colors.TryAdd(item.Key, item.Value);
         }
 
-        public IEnumerable<ExcelColors> Colors { get => colors.Values; }
+        public static IEnumerable<ExcelColors> Colors => colors.Values;
 
         public ICellStyle CellStyle { get; private set; }
 
@@ -117,19 +117,22 @@ namespace ExportToExcel
         /// </summary>
         public BorderStyle LeftStyle { get; set; } = BorderStyle.Thin;
 
-        public void SetForegroundColor(StyleColorSelectedEventArgs a)
-        {
-            ForegroundColorIndex = a.ColorIndex;
-        }
+        /// <summary>
+        /// Sets the Foreground color of the spreadsheet
+        /// </summary>
+        /// <param name="a"></param>
+        public void SetForegroundColor(StyleColorSelectedEventArgs a) => ForegroundColorIndex = a.ColorIndex;        
 
-        public void SetHorizontalAlignment(HorizontalAlignmentChangedEventArgs a)
-        {
-            HorizontalAlignment = a.SelectedAlignment;
-        }
+        /// <summary>
+        /// Sets the horizontal alignment of the spreadsheet
+        /// </summary>
+        /// <param name="a"></param>
+        public void SetHorizontalAlignment(HorizontalAlignmentChangedEventArgs a) => HorizontalAlignment = a.SelectedAlignment;        
 
-        public void SetVerticalAlignment(VerticalAlignmentChangedEventArgs a)
-        {
-            VerticalAlignment = a.SelectedAlignment;
-        }
+        /// <summary>
+        /// Sets the vertical alignment of the spreadsheet
+        /// </summary>
+        /// <param name="a"></param>
+        public void SetVerticalAlignment(VerticalAlignmentChangedEventArgs a) => VerticalAlignment = a.SelectedAlignment;        
     }
 }

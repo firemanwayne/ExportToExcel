@@ -1,12 +1,12 @@
-﻿using ExportToExcel.Attributes;
-using NPOI.SS.UserModel;
+﻿using NPOI.SS.UserModel;
+using Simple.ExportToExcel.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     public class HeaderBuilder<T>
     {
@@ -44,11 +44,11 @@ namespace ExportToExcel
             ExcelSheet = workBook.CreateSheet(FileName);
             HeaderRow = ExcelSheet.CreateRow(0);
 
-            if (TryGetSpreadSheetMetaData())            
-                CreateCellsByAttribute();   
-            
-            else            
-                CreateCellsByReflection();           
+            if (TryGetSpreadSheetMetaData())
+                CreateCellsByAttribute();
+
+            else
+                CreateCellsByReflection();
 
             return ExcelSheet;
         }

@@ -1,11 +1,9 @@
 ﻿using System;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
-
     public record UploadFileResponse : UploadResponse
     {
         public Uri FileUri { get; init; }
-
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     /// <summary>
     /// Response returned after a spreadsheet has been generated

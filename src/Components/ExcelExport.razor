@@ -1,66 +1,115 @@
 ﻿@typeparam TValue
 
-<button type="button" @onclick="HandleExport" style="@CssStyle" class="@CssClass" title="@Title">@ButtonText</button>
+<h3>Header Style</h3>
 
-@code{
-    [Parameter] public string CssStyle { get; set; }
+<ExcelColorSelector OnColorSelected="HandleHeaderColorSelected" />
 
-    [Parameter] public string CssClass { get; set; } = "btn btn-outline-success";
+<ExcelHorizontalAlignmentSelector OnSelected="HandleHeaderHorizontalAlignmentSelected" />
 
-    [Parameter] public string Title { get; set; } = "Export To Excel";
+<ExcelVerticalAlignmentSelector OnSelected="HandleHeaderVerticalAlignmentSelected" />
 
-    [Parameter] public object ButtonText { get; set; }
+<br/>
 
-    [Parameter] public string ReportName { get; set; } = $"{DateTime.UtcNow:MMddyyyyhhmmss}";
+<h3>Body Style</h3>
 
-    [Parameter] public HeaderStyle HeaderStyle { get; set; }
+<ExcelColorSelector OnColorSelected="HandleBodyColorSelected" />
 
-    [Parameter] public BodyStyle BodyStyle { get; set; }
+<ExcelHorizontalAlignmentSelector OnSelected="HandleBodyHorizontalAlignmentSelected" />
 
-    [Parameter] public Func<IEnumerable<TValue>> RequestDelegate { get; set; }
+<ExcelVerticalAlignmentSelector OnSelected="HandleBodyVerticalAlignmentSelected" />
 
-    [Parameter] public UploadFileEventHandler DownloadToBrowser { get; set; }
+<button type="button"
+        @onclick="HandleExport"
+        style="@CssStyle"
+        class="@CssClass"
+        title="@Title">
+    @ButtonText
+    </button>
 
-    [Inject] ExcelDownloadService DownloadService { get; set; }
+    @code{
+        [Parameter] public string CssStyle { get; set; }
 
-    [Inject] IExportToExcel<TValue> ExcelService { get; set; }
+        [Parameter] public string CssClass { get; set; } = "btn btn-outline-success";
 
-    ExcelDocumentRequest<TValue> ExcelRequest { get; set; }   
+        [Parameter] public string Title { get; set; } = "Export To Excel";
 
-    async void HandleExport()
-    {
-        if (RequestDelegate != null)
-            await Export();
+        [Parameter] public object ButtonText { get; set; }
+
+        [Parameter] public string ReportName { get; set; } = $"{DateTime.UtcNow:MMddyyyyhhmmss}";
+
+        [Parameter] public Func<IEnumerable<TValue>> RequestDelegate { get; set; }
+
+        [Inject] IExcelDownloadService DownloadService { get; set; }
+
+        [Inject] IExportToExcel<TValue> ExcelService { get; set; }
+
+        ExcelDocumentRequest<TValue> ExcelRequest { get; set; }
+
+        HeaderStyle headerStyle = new HeaderStyle();
+        BodyStyle bodyStyle = new BodyStyle();
+
+        async void HandleExport()
+        {
+            if (RequestDelegate != null)
+                await Export();
+        }
+
+        async Task Export()
+        {
+            try
+            {
+                var request = new ExcelDocumentRequest<TValue>(ReportName, RequestDelegate?.Invoke(), headerStyle, bodyStyle);
+
+                var response = await ExcelService.ExportToExcel(request);
+
+                await Download(response);
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        async Task Download(ExcelDocumentResponse response)
+        {
+            try
+            {
+                var r = await ExportFile(response);
+
+                await DownloadService.ExportFile(r);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        Task<UploadResponse> ExportFile(ExcelDocumentResponse excelDocument)
+        {
+            var uploadFileLocalResponse = new UploadFileLocalResponse()
+            {
+                FileContent = Convert.ToBase64String(excelDocument.SpreadSheetBytes),
+                ContentType = excelDocument.ContentType,
+                FileName = excelDocument.FileName
+            };
+
+            return Task.FromResult((UploadResponse)uploadFileLocalResponse);
+        }
+
+        /// <summary>
+        /// Header Style Handlers
+        /// </summary>
+        /// <param name="a"></param>
+        void HandleHeaderColorSelected(StyleColorSelectedEventArgs a) => headerStyle.SetForegroundColor(a);
+        void HandleHeaderVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a) => headerStyle.SetVerticalAlignment(a);
+        void HandleHeaderHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a) => headerStyle.SetHorizontalAlignment(a);
+
+        /// <summary>
+        /// Body Style Handlers
+        /// </summary>
+        /// <param name="a"></param>
+        void HandleBodyHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a) => bodyStyle.SetHorizontalAlignment(a);
+        void HandleBodyColorSelected(StyleColorSelectedEventArgs a) => bodyStyle.SetForegroundColor(a);
+        void HandleBodyVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a) => bodyStyle.SetVerticalAlignment(a);
     }
-
-    async Task Export()
-    {
-        try
-        {
-            var request = new ExcelDocumentRequest<TValue>(ReportName, RequestDelegate?.Invoke(), HeaderStyle, BodyStyle);
-
-            var response = await ExcelService.ExportToExcel(request);
-
-            await Download(response);
-
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-
-    async Task Download(ExcelDocumentResponse response)
-    {
-        try
-        {
-            var r = await DownloadToBrowser?.Invoke(response);
-
-            await DownloadService.ExportFile(r);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
-    }
-}

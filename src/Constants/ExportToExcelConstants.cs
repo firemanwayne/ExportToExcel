@@ -1,4 +1,4 @@
-﻿namespace ExportToExcel
+﻿namespace Simple.ExportToExcel
 {
     public static class ExcelConstants
     {

@@ -1,7 +1,7 @@
 ﻿using NPOI.SS.UserModel;
 using System;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     public class HorizontalAlignmentChangedEventArgs : EventArgs
     {

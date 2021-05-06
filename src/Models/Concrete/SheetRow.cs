@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
+    /// <summary>
+    /// Represents a row in a spreadsheet
+    /// </summary>
     public class SheetRow
     {
         readonly IList<SheetColumn> columns = new List<SheetColumn>();
@@ -27,7 +30,7 @@ namespace ExportToExcel
         }
 
         public int Index { get; }
-        public int ColumnCount { get => columns.Count; }
-        public ICollection<SheetColumn> Columns { get => columns; }
+        public int ColumnCount => columns.Count;
+        public ICollection<SheetColumn> Columns => columns;
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     internal class FileNameMissingExtensionException : Exception
     {

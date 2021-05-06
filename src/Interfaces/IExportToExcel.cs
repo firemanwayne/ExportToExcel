@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     /// <summary>
     /// Generates Excel spreadsheets

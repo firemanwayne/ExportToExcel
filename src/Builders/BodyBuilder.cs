@@ -1,11 +1,10 @@
 ﻿using NPOI.SS.UserModel;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     public class BodyBuilder<T>
     {
@@ -53,7 +52,7 @@ namespace ExportToExcel
             var BodyRow = ExcelSheet.CreateRow(RowCount);
 
             var Properties = Header
-                .ColumnProperties                
+                .ColumnProperties
                 .Where(e => !e.PropertyType.IsGenericType)
                 .ToList();
 
@@ -67,9 +66,9 @@ namespace ExportToExcel
                     .GetType()
                     .GetProperty(propertyName);
 
-                if (item.IsList())                
+                if (item.IsList())
                     CreateBodyRowFromGenericList(Entity, item, ExcelSheet, RowCount);
-                
+
                 else
                 {
                     var propertyValue = ParentProperty.GetValue(Entity, null) ?? "";

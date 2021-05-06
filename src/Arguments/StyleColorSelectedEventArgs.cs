@@ -1,7 +1,7 @@
-﻿using ExportToExcel.Styles;
+﻿using Simple.ExportToExcel.Styles;
 using System;
 
-namespace ExportToExcel
+namespace Simple.ExportToExcel
 {
     public class StyleColorSelectedEventArgs : EventArgs
     {
