@@ -24,14 +24,37 @@ Here is an example of using the ExportToExcel component:
 [Parameter] RequestDelegate = Func<IEnumerable<TValue>> method that will retrive a list of the specified TValue
 ```
 
+**Example of usage:**
+
 ```html
 
-<ExcelExport 
-ButtonText=UserButtonText
-CssClass="btn btn-outline-success" 
-ReportName=@UserReportName
-TValue="UserSpreadSheet"
-RequestDelegate="ExportUserRequest" />
+<ExcelExport ButtonText=ExportButtonText
+             CssClass="btn btn-outline-success"
+             ReportName=@ExcelSpreadSheetName
+             TValue=WeatherForecast
+             RequestDelegate=GetData />
+
+@code{
+
+    string ExportButtonText = "Export Weather Data";
+    string ExcelSpreadSheetName = $"CurrentWeatherTable{DateTime.Now:ddmmyyyyhhmmss}";   
+
+    WeatherForecast[] forecasts;
+
+    [Inject] WeatherForecastService ForecastService { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    }   
+
+    /// <summary>
+    /// Data retrieval method
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<WeatherForecast> GetData() => forecasts ?? Enumerable.Empty<WeatherForecast>();
+     
+}
 
 ```
 
