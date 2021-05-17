@@ -1,14 +1,3 @@
-pool:
-  vmImage: 'windows-latest'
-- task: CmdLine@2
-  inputs:
-    script: |
-      git clone https://github.com/firemanwayne/ExportToExcel.git
-      git config --global user.name "firemanwayne"
-      git checkout main
-      git add .
-      git commit -m "738685da8fc0125cfefd5fd710d165b18e15d285"
-      git push https://{$(AzureDevOps.PAT)}@dev.azure.com/{org}/{pro}/_git/delete.git
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
