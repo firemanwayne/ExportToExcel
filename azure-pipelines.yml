@@ -4,7 +4,7 @@
     script: |
       git clone https://github.com/firemanwayne/ExportToExcel.git
       git config --global user.name "firemanwayne"
-      git checkout master
+      git checkout main
       git add .
       git commit -m "abc"
       git push https://{$(AzureDevOps.PAT)}@dev.azure.com/{org}/{pro}/_git/delete.git
