@@ -1,4 +1,5 @@
-# ASP.NET Core (.NET Framework)
+pool:
+  vmImage: 'windows-latest'
 - task: CmdLine@2
   inputs:
     script: |
@@ -8,16 +9,6 @@
       git add .
       git commit -m "738685da8fc0125cfefd5fd710d165b18e15d285"
       git push https://{$(AzureDevOps.PAT)}@dev.azure.com/{org}/{pro}/_git/delete.git
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
-trigger:
-- main
-
-pool:
-  vmImage: 'windows-latest'
-
 variables:
   solution: '**/*.sln'
   buildPlatform: 'Any CPU'
