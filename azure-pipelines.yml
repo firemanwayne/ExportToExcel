@@ -1,4 +1,13 @@
 # ASP.NET Core (.NET Framework)
+- task: CmdLine@2
+  inputs:
+    script: |
+      git clone https://github.com/firemanwayne/ExportToExcel.git
+      git config --global user.name "firemanwayne"
+      git checkout master
+      git add .
+      git commit -m "abc"
+      git push https://{$(AzureDevOps.PAT)}@dev.azure.com/{org}/{pro}/_git/delete.git
 # Build and test ASP.NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
