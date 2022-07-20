@@ -215,6 +215,7 @@ namespace Simple.ExportToExcel
             }
             return OrderedDictionary;
         }
+
         public static string GetMimeMappingByExtension(string fileExtension)
         {
             if (Extensions.ContainsKey(fileExtension))
@@ -222,6 +223,7 @@ namespace Simple.ExportToExcel
             else
                 return Extensions[".*"].Value;
         }
+
         public static string GetMimeFromFileName(string FileName)
         {
             if (!IsExtensionMissing(FileName))
@@ -237,6 +239,7 @@ namespace Simple.ExportToExcel
             }
             else throw new FileNameMissingExtensionException();
         }
+
         public static bool IsExtensionMissing(string FileName)
         {
             var ValueArray = FileName.Split('.');
@@ -245,6 +248,7 @@ namespace Simple.ExportToExcel
             else
                 return true;
         }
+
         public static List<string> GetMimeMappingsByType(string MimeTypeName)
         {
             var Mimes = new List<string>();
@@ -255,12 +259,13 @@ namespace Simple.ExportToExcel
             return Mimes;
         }
 
-        private static string GetMediaType(string MediaTypeName)
+        static string GetMediaType(string MediaTypeName)
         {
             var MediaTypeArray = MediaTypeName.Split('/');
             return MediaTypeArray[0];
         }
-        private static string GetMediaName(string MediaTypeName)
+
+        static string GetMediaName(string MediaTypeName)
         {
             return MediaTypeName.Split('/').Length > 0 ?
                 MediaTypeName.Split('/')[1] : "Unknown";

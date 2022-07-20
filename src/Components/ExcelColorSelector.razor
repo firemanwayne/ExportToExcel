@@ -1,4 +1,16 @@
-﻿@code {
+﻿<div class="inputBox">   
+    <select @onchange="HandleChange">
+        <option value="">Select Color</option>
+
+        @foreach (var item in ExcelColors.ColorCollection)
+        {
+            <option style="background-color:@item.Value.RGBValue" value="@item.Key">@item.Value.Name</option>
+        }
+    </select>
+    <span>Background Color</span>
+</div>
+
+@code {
     [Parameter] public EventCallback<StyleColorSelectedEventArgs> OnColorSelected { get; set; }
 
     void HandleChange(ChangeEventArgs args)
@@ -14,17 +26,3 @@
         }
     }
 }
-
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text">Background Color</span>
-    </div>
-    <select class="form-control" @onchange="HandleChange">
-        <option value="">Select Color</option>
-
-        @foreach (var item in ExcelColors.ColorCollection)
-        {
-            <option style="background-color:@item.Value.RGBValue" value="@item.Key">@item.Value.Name</option>
-        }
-    </select>
-</div>

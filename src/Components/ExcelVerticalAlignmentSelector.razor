@@ -1,4 +1,15 @@
-﻿@code {
+﻿
+<div class="inputBox">    
+    <select @onchange="HandleChange">
+        <option value="">Select Alignment</option>
+        <option value="@VerticalAlignment.Center">Center</option>
+        <option value="@VerticalAlignment.Top">Top</option>
+        <option value="@VerticalAlignment.Bottom">Bottom</option>
+    </select>
+    <span>Vertical Alignment</span>
+</div>
+
+@code {
     [Parameter] public EventCallback<VerticalAlignmentChangedEventArgs> OnSelected { get; set; }    
 
     void HandleChange(ChangeEventArgs args)
@@ -13,15 +24,3 @@
           args.Value.ToString() == "Bottom" ? VerticalAlignment.Bottom :
           VerticalAlignment.None;
 }
-
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <span class="input-group-text">Vertical Alignment</span>
-    </div>
-    <select class="form-control" @onchange="HandleChange">
-        <option value="">Select Alignment</option>
-        <option value="@VerticalAlignment.Center">Center</option>
-        <option value="@VerticalAlignment.Top">Top</option>
-        <option value="@VerticalAlignment.Bottom">Bottom</option>
-    </select>
-</div>

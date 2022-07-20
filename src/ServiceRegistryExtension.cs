@@ -1,5 +1,4 @@
-﻿
-using Simple.ExportToExcel;
+﻿using Simple.ExportToExcel;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

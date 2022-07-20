@@ -47,7 +47,7 @@ namespace Simple.ExportToExcel
                 EvaluatedExpression = x => EvaluateDates(time, time1, Operator);
         }
 
-        private static bool EvaluateDates(DateTime Date1, DateTime Date2, OperationOperatorEnum Operator)
+        static bool EvaluateDates(DateTime Date1, DateTime Date2, OperationOperatorEnum Operator)
         {
             if (Operator == OperationOperatorEnum.GreaterThan)
                 return Date1 == Date2;
@@ -60,7 +60,7 @@ namespace Simple.ExportToExcel
 
             return false;
         }
-        private static bool EvaluateInts(int Value1, int Value2, OperationOperatorEnum Operator)
+        static bool EvaluateInts(int Value1, int Value2, OperationOperatorEnum Operator)
         {
             if (Operator == OperationOperatorEnum.GreaterThan)
                 return Value1 == Value2;

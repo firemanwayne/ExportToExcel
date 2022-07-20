@@ -1,0 +1,61 @@
+﻿.inputBox {
+    position: relative;
+    width: 100%;
+    padding: 10px;
+}
+
+    .inputBox input, select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid rgba(124, 124, 124, .5);
+        background: #fff;
+        border-radius: 10px;
+        outline: none;
+        font-size: 1em;
+        transition: 0.5s;
+    }
+
+    .inputBox span {
+        position: absolute;
+        left: 5px;
+        padding: 10px;
+        color: rgba(124, 124, 124, 1);
+        pointer-events: none;
+        text-transform: unset;
+        transition: 0.5s;
+    }
+
+    .inputBox input:not(:placeholder-shown) ~ span,
+    .inputBox input:focus ~ span {
+        color: #fff;
+        transform: translateX(15px) translateY(-10px);
+        font-size: .80em;
+        padding: 0 5px;
+        background-color: #007915;
+        letter-spacing: .1em;
+        border-radius: 4px;
+    }   
+
+    .inputBox input[aria-invalid="true"] {
+        outline: 1px solid red;
+    }
+
+    .inputBox select ~ span {
+        color: #fff;
+        transform: translateX(10px) translateY(-10px);
+        font-size: .75em;
+        padding: 0 10px;
+        left: 10px;
+        background-color: #007915;
+        letter-spacing: .2em;
+        border-radius: 4px;
+    }
+.btn-excel {
+    color: #007915;
+    background-color: transparent;
+}
+
+.btn-excel:hover {
+    color: #fff;
+    background-color: #007915;
+}

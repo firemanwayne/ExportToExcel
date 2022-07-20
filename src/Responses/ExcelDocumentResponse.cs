@@ -14,7 +14,7 @@ namespace Simple.ExportToExcel
         public ExcelDocumentResponse(string FileName)
         {
             this.FileName = FileName;
-            ContentType = ExcelConstants.ContentType;
+            ContentType = ExcelConstants.Excel;
             IsSuccessful = true;
         }
 

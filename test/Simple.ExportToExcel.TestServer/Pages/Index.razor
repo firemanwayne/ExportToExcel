@@ -32,17 +32,18 @@ else
         </tbody>
     </table>
 }
+<div class="row">
+    <div class="col-6">
+        <ExcelExport ButtonText=ButtonText
+                     ButtonClass="btn btn-outline-success btn-excel"
+                     TValue=WeatherForecast
+                     RequestDelegate=GetData />
+    </div>
+</div>
 
-<ExcelExport ButtonText=ButtonText
-             CssClass="btn btn-outline-success"
-             ReportName=@ReportName
-             TValue=WeatherForecast
-             RequestDelegate=GetData />
-
-@code{
+@code {
 
     string ButtonText = "Export Weather Data";
-    string ReportName = $"CurrentWeatherTable{DateTime.Now:ddmmyyyyhhmmss}";   
 
     WeatherForecast[] forecasts;
 
@@ -51,7 +52,7 @@ else
     protected override async Task OnInitializedAsync()
     {
         forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
-    }   
+    }
 
     /// <summary>
     /// Data retrieval method

@@ -1,4 +1,5 @@
-﻿@typeparam TValue
+﻿@using System.ComponentModel.DataAnnotations
+@typeparam TValue
 
 <h3>Header Style</h3>
 
@@ -8,7 +9,7 @@
 
 <ExcelVerticalAlignmentSelector OnSelected="HandleHeaderVerticalAlignmentSelected" />
 
-<br/>
+<br />
 
 <h3>Body Style</h3>
 
@@ -18,103 +19,139 @@
 
 <ExcelVerticalAlignmentSelector OnSelected="HandleBodyVerticalAlignmentSelected" />
 
-<button type="button"
-        @onclick="HandleExport"
-        style="@CssStyle"
-        class="@CssClass"
-        title="@Title">
+<h3>Filename</h3>
+<EditForm Model="@_model" OnValidSubmit="HandleExport">
+    <DataAnnotationsValidator/>
+    <div class="inputBox">
+        <InputText @bind-Value="@_model.Filename" placeholder=" " title="Name of the exported excel file" />
+        <span>Filename</span>
+        <ValidationMessage For="@(() => _model.Filename)" />      
+    </div>
+
+<button type="submit"        
+        style="@ButtonStyle"
+        class="@ButtonClass"
+        title="@ButtonTitle">
     @ButtonText
-    </button>
+</button>
 
-    @code{
-        [Parameter] public string CssStyle { get; set; }
+</EditForm>
+@code {
+    [Parameter] public string ButtonStyle { get; set; }
 
-        [Parameter] public string CssClass { get; set; } = "btn btn-outline-success";
+    [Parameter] public string ButtonClass { get; set; } = "btn btn-outline-success";
 
-        [Parameter] public string Title { get; set; } = "Export To Excel";
+    [Parameter] public string ButtonTitle { get; set; } = "Export To Excel";
 
-        [Parameter] public object ButtonText { get; set; }
+    [Parameter] public object ButtonText { get; set; }
 
-        [Parameter] public string ReportName { get; set; } = $"{DateTime.UtcNow:MMddyyyyhhmmss}";
+    [Parameter] public string Filename { get; set; } = string.Empty;
 
-        [Parameter] public Func<IEnumerable<TValue>> RequestDelegate { get; set; }
+    /// <summary>
+    /// Method that will be invoked to retrieve data
+    /// </summary>
+    [Parameter] public Func<IEnumerable<TValue>> RequestDelegate { get; set; } = default!;
 
-        [Inject] IExcelDownloadService DownloadService { get; set; }
+    [Inject] IExcelDownloadService DownloadService { get; set; } = default!;
 
-        [Inject] IExportToExcel<TValue> ExcelService { get; set; }
+    [Inject] IExportToExcel<TValue> ExcelService { get; set; } = default!;
 
-        ExcelDocumentRequest<TValue> ExcelRequest { get; set; }
+    ExcelDocumentRequest<TValue> ExcelRequest { get; set; } = default!;
 
-        HeaderStyle headerStyle = new HeaderStyle();
-        BodyStyle bodyStyle = new BodyStyle();
+    HeaderStyle headerStyle = new HeaderStyle();
+    BodyStyle bodyStyle = new BodyStyle();
 
-        async void HandleExport()
+    InputModel _model = new();
+
+    protected override Task OnParametersSetAsync()
+    {
+        _model = new()
         {
-            if (RequestDelegate != null)
-                await Export();
-        }
+            Filename = Filename
+        };
 
-        async Task Export()
+        return base.OnParametersSetAsync();
+    }
+
+    async void HandleExport()
+    {
+        if (RequestDelegate != null)
+            await Export();
+    }
+
+    async Task Export()
+    {
+        try
         {
-            try
+            if (RequestDelegate is not null)
             {
-                var request = new ExcelDocumentRequest<TValue>(ReportName, RequestDelegate?.Invoke(), headerStyle, bodyStyle);
+                var request = new ExcelDocumentRequest<TValue>(_model.Filename, RequestDelegate.Invoke(), headerStyle, bodyStyle);
 
                 var response = await ExcelService.ExportToExcel(request);
 
                 await Download(response);
-
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
             }
         }
-
-        async Task Download(ExcelDocumentResponse response)
+        catch (Exception ex)
         {
-            try
-            {
-                var r = await ExportFile(response);
-
-                await DownloadService.ExportFile(r);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
+            Console.WriteLine(ex.Message);
         }
+    }
 
-        /// <summary>
-        /// Andre' Rizzato's provided solution for downloading the excel spreadsheet to the browser
-        /// </summary>
-        /// <param name="excelDocument"></param>
-        /// <returns></returns>
-        Task<UploadResponse> ExportFile(ExcelDocumentResponse excelDocument)
+    async Task Download(ExcelDocumentResponse response)
+    {
+        try
         {
-            var uploadFileLocalResponse = new UploadFileLocalResponse()
+            var r = await ExportFile(response);
+
+            await DownloadService.ExportFile(r);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Andre' Rizzato's provided solution for downloading the excel spreadsheet to the browser
+    /// </summary>
+    /// <param name="excelDocument"></param>
+    /// <returns></returns>
+    Task<UploadResponse> ExportFile(ExcelDocumentResponse excelDocument)
+    {
+        var uploadFileLocalResponse = new UploadFileLocalResponse()
             {
                 FileContent = Convert.ToBase64String(excelDocument.SpreadSheetBytes),
                 ContentType = excelDocument.ContentType,
                 FileName = excelDocument.FileName
             };
 
-            return Task.FromResult((UploadResponse)uploadFileLocalResponse);
-        }
-
-        /// <summary>
-        /// Header Style Handlers
-        /// </summary>
-        /// <param name="a"></param>
-        void HandleHeaderColorSelected(StyleColorSelectedEventArgs a) => headerStyle.SetForegroundColor(a);
-        void HandleHeaderVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a) => headerStyle.SetVerticalAlignment(a);
-        void HandleHeaderHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a) => headerStyle.SetHorizontalAlignment(a);
-
-        /// <summary>
-        /// Body Style Handlers
-        /// </summary>
-        /// <param name="a"></param>
-        void HandleBodyHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a) => bodyStyle.SetHorizontalAlignment(a);
-        void HandleBodyColorSelected(StyleColorSelectedEventArgs a) => bodyStyle.SetForegroundColor(a);
-        void HandleBodyVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a) => bodyStyle.SetVerticalAlignment(a);
+        return Task.FromResult((UploadResponse)uploadFileLocalResponse);
     }
+
+    /// <summary>
+    /// Header Style Handlers
+    /// </summary>
+    /// <param name="a"></param>
+    void HandleHeaderColorSelected(StyleColorSelectedEventArgs a) => headerStyle.SetForegroundColor(a);
+    void HandleHeaderVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a) => headerStyle.SetVerticalAlignment(a);
+    void HandleHeaderHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a) => headerStyle.SetHorizontalAlignment(a);
+
+    /// <summary>
+    /// Body Style Handlers
+    /// </summary>
+    /// <param name="a"></param>
+    void HandleBodyHorizontalAlignmentSelected(HorizontalAlignmentChangedEventArgs a) => bodyStyle.SetHorizontalAlignment(a);
+    void HandleBodyColorSelected(StyleColorSelectedEventArgs a) => bodyStyle.SetForegroundColor(a);
+    void HandleBodyVerticalAlignmentSelected(VerticalAlignmentChangedEventArgs a) => bodyStyle.SetVerticalAlignment(a);
+
+    class InputModel
+    {
+        /// <summary>
+        /// Name of the excel file generated
+        /// </summary>
+        [Required]
+        [StringLength(maximumLength: 26)]       
+        public string Filename { get; set; } = string.Empty;
+    }
+ }

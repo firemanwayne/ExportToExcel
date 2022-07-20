@@ -106,7 +106,6 @@ namespace Simple.ExportToExcel
                 object[] attributes = ListPropertyList[h]?.GetCustomAttributes(typeof(DisplayAttribute), false);
                 var Displayname = ((DisplayAttribute)attributes[0]).Name;
 
-
                 ICell BodyHeaderCell = HeaderColumnRow1.CreateCell(h);
                 BodyHeaderCell.CellStyle = HeaderCellStyle;
                 BodyHeaderCell.SetCellValue(Displayname);
