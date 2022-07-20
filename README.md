@@ -8,7 +8,7 @@ Simple Blazor Component that will Export Data in a Spreadsheet format
 
 **Implementation:**
 
-Start by calling the registry method when you are configuring your services:
+Start by adding services.AddExportToExcel() method when you are configuring your services:
 
 ```csharp
  services.AddExportToExcel();
@@ -18,9 +18,10 @@ Here is an example of using the ExportToExcel component:
 
 ```csharp
 [Parameter] ButtonText = Sets the text that will be displayed on the Export Button
-[Parameter] CssClass = Sets the Css Class for the Export Button
-[Parameter] ReportName = The name that you would like the report to be saved as
-[Parameter] TValue = Type of object that is being used
+[Parameter] ButtonStyle = Sets the Css Style for the Export Button
+[Parameter] ButtonClass = Sets the Css Class for the Export Button
+[Parameter] ButtonTitle = Displays text when you hover over button
+[Parameter] TValue = Type of object that is being exported
 [Parameter] RequestDelegate = Func<IEnumerable<TValue>> method that will retrive a list of the specified TValue
 ```
 
@@ -28,16 +29,14 @@ Here is an example of using the ExportToExcel component:
 
 ```html
 
-<ExcelExport ButtonText=ExportButtonText
-             CssClass="btn btn-outline-success"
-             ReportName=@ExcelSpreadSheetName
-             TValue=WeatherForecast
-             RequestDelegate=GetData />
+ <ExcelExport ButtonText=@ButtonText
+              ButtonClass="btn btn-outline-success btn-excel"
+              TValue=WeatherForecast
+              RequestDelegate=GetData />
 
 @code{
 
-    string ExportButtonText = "Export Weather Data";
-    string ExcelSpreadSheetName = $"CurrentWeatherTable{DateTime.Now:ddmmyyyyhhmmss}";   
+    string ButtonText = "Export Weather Data";       
 
     WeatherForecast[] forecasts;
 
@@ -52,8 +51,7 @@ Here is an example of using the ExportToExcel component:
     /// Data retrieval method
     /// </summary>
     /// <returns></returns>
-    IEnumerable<WeatherForecast> GetData() => forecasts ?? Enumerable.Empty<WeatherForecast>();
-     
+    IEnumerable<WeatherForecast> GetData() => forecasts ?? Enumerable.Empty<WeatherForecast>();     
 }
 
 ```
@@ -61,3 +59,16 @@ Here is an example of using the ExportToExcel component:
 **Contributions**
 
 Thank you to Andre' Rizzato for discovering an implementation issue and providing a working solution.
+
+**Change Log**
+
+[Version 1.1.0.0]
+ - Changed parameters in ExcelExport component
+    - CssClass => ButtonClass
+    - ReportName => Has been removed
+    - Title => Button Title
+    - ButtonStyle => Added so you can add additional styling
+
+ - Changed styling of input fields
+ - Added validation to Filename input field
+ - Updated to .Net 6.0

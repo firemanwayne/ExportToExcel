@@ -43,9 +43,7 @@
 
     [Parameter] public string ButtonTitle { get; set; } = "Export To Excel";
 
-    [Parameter] public object ButtonText { get; set; }
-
-    [Parameter] public string Filename { get; set; } = string.Empty;
+    [Parameter] public object ButtonText { get; set; }    
 
     /// <summary>
     /// Method that will be invoked to retrieve data
@@ -65,10 +63,7 @@
 
     protected override Task OnParametersSetAsync()
     {
-        _model = new()
-        {
-            Filename = Filename
-        };
+        _model = new();        
 
         return base.OnParametersSetAsync();
     }
