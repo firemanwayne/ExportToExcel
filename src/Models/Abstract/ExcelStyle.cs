@@ -7,8 +7,7 @@ namespace Simple.ExportToExcel
 {
     public abstract class ExcelStyle
     {
-        short foregroundColorIndex;
-        short backgroundColorIndex;
+        short _foregroundColorIndex;
         static readonly IDictionary<short, ExcelColors> colors = new Dictionary<short, ExcelColors>();
 
         public ExcelStyle()
@@ -40,37 +39,7 @@ namespace Simple.ExportToExcel
             CellStyle = cellStyle;
 
             return cellStyle;
-        }
-
-        /// <summary>
-        /// Foreground Color
-        /// </summary>
-        public short ForegroundColorIndex
-        {
-            get => foregroundColorIndex;
-            set
-            {
-                foregroundColorIndex = value;
-
-                if (colors.TryGetValue(value, out var r))
-                    ForegroundColor = new XSSFColor(r.IndexedColor);
-            }
-        }
-
-        /// <summary>
-        /// Background Color. Default is white
-        /// </summary>
-        public short BackgroundColorIndex
-        {
-            get => backgroundColorIndex;
-            set
-            {
-                backgroundColorIndex = value;
-
-                if (colors.TryGetValue(value, out var r))
-                    BackgroundColor = new XSSFColor(r.IndexedColor);
-            }
-        }
+        }        
 
         /// <summary>
         /// Foreground Color
@@ -121,7 +90,7 @@ namespace Simple.ExportToExcel
         /// Sets the Foreground color of the spreadsheet
         /// </summary>
         /// <param name="a"></param>
-        public void SetForegroundColor(StyleColorSelectedEventArgs a) => ForegroundColorIndex = a.ColorIndex;        
+        public void SetForegroundColor(StyleColorSelectedEventArgs a) => _foregroundColorIndex = a.ColorIndex;        
 
         /// <summary>
         /// Sets the horizontal alignment of the spreadsheet

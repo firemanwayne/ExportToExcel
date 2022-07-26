@@ -20,16 +20,7 @@ namespace Simple.ExportToExcel
             this.Header = Header;
             HeaderCellStyle = Request.HeaderStyle.CellStyle ?? Request.HeaderStyle.GenerateStyleObject(Request.Workbook);
             BodyCellStyle = BodyStyle.GenerateStyleObject(Request.Workbook);
-        }
-
-        public BodyBuilder(IWorkbook workBook, HeaderBuilder<T> Header, IEnumerable<T> DataItems, BodyStyle BodyStyle, HeaderStyle HeaderStyle)
-        {
-            this.BodyStyle = BodyStyle;
-            this.DataItems = DataItems;
-            this.Header = Header;
-            HeaderCellStyle = HeaderStyle.CellStyle ?? HeaderStyle.GenerateStyleObject(workBook);
-            BodyCellStyle = BodyStyle.GenerateStyleObject(workBook);
-        }
+        }       
 
         public BodyStyle BodyStyle { get; }
         public IEnumerable<T> DataItems { get; }
@@ -73,19 +64,40 @@ namespace Simple.ExportToExcel
                 {
                     var propertyValue = ParentProperty.GetValue(Entity, null) ?? "";
 
-                    CreateCell(BodyRow, ColumnCount, $"{propertyValue}");
+                    CreateCell(BodyRow, ColumnCount, propertyValue);
 
                     ColumnCount++;
                 }
             }
         }
-        static void CreateCell(IRow BodyRow, int Column, string Value)
+        static void CreateCell(IRow BodyRow, int Column, object Value)
         {
             var Cell = BodyRow.CreateCell(Column);
             Cell.CellStyle = BodyCellStyle;
-            Cell.SetCellValue(Value);
-        }
 
+            switch (Value)
+            {
+                case int v:
+                    Cell.SetCellValue(v);
+                    break;
+
+                case string v:
+                    Cell.SetCellValue(v);
+                    break;
+
+                case double v:
+                    Cell.SetCellValue(v);
+                    break;
+
+                case float v:
+                    Cell.SetCellValue(v);
+                    break;
+
+                default:
+                    Cell.SetCellValue($"{Value}");
+                    break;
+            }
+        }
         static void CreateBodyRowFromGenericList(T Parent, PropertyInfo Entity, ISheet ExcelSheet, int RowCount)
         {
             var propertyName = Entity.Name;

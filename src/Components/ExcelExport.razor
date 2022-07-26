@@ -57,7 +57,10 @@
     ExcelDocumentRequest<TValue> ExcelRequest { get; set; } = default!;
 
     HeaderStyle headerStyle = new HeaderStyle();
-    BodyStyle bodyStyle = new BodyStyle();
+    BodyStyle bodyStyle = new BodyStyle()
+    {
+        
+    };
 
     InputModel _model = new();
 

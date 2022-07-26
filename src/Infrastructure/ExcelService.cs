@@ -35,7 +35,7 @@ namespace Simple.ExportToExcel
 
             var body = new BodyBuilder<T>(Request, header);
 
-            ExcelBuilder.Build<T>(Request.FileName, body, header);
+            ExcelBuilder.Build(Request.FileName, body, header);
         }
     }
 }
