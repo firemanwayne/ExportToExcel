@@ -62,6 +62,9 @@ Thank you to Andre' Rizzato for discovering an implementation issue and providin
 
 **Change Log**
 
+[Version 1.1.0.1]
+- Changed how cell value is set so that the correct type is used. Type integer was causing formatting warnings to show in the exported excel file
+
 [Version 1.1.0.0]
  - Changed parameters in ExcelExport component
     - CssClass => ButtonClass
