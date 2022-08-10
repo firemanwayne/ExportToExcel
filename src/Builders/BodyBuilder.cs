@@ -72,8 +72,7 @@ namespace Simple.ExportToExcel
         }
         static void CreateCell(IRow BodyRow, int Column, object Value)
         {
-            var Cell = BodyRow.CreateCell(Column);
-            Cell.CellStyle = BodyCellStyle;
+            var Cell = BodyRow.CreateCell(Column);            
 
             switch (Value)
             {
@@ -97,6 +96,7 @@ namespace Simple.ExportToExcel
                     Cell.SetCellValue($"{Value}");
                     break;
             }
+            Cell.CellStyle = BodyCellStyle;
         }
         static void CreateBodyRowFromGenericList(T Parent, PropertyInfo Entity, ISheet ExcelSheet, int RowCount)
         {

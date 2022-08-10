@@ -8,6 +8,7 @@ namespace Simple.ExportToExcel
     public abstract class ExcelStyle
     {
         short _foregroundColorIndex;
+        short _backgroundColorIndex;
         static readonly IDictionary<short, ExcelColors> colors = new Dictionary<short, ExcelColors>();
 
         public ExcelStyle()
@@ -39,7 +40,37 @@ namespace Simple.ExportToExcel
             CellStyle = cellStyle;
 
             return cellStyle;
-        }        
+        }
+
+        /// <summary>
+        /// Foreground Color
+        /// </summary>
+        public short ForegroundColorIndex
+        {
+            get => _foregroundColorIndex;
+            set
+            {
+                _foregroundColorIndex = value;
+
+                if (colors.TryGetValue(value, out var r))
+                    ForegroundColor = new XSSFColor(r.IndexedColor);
+            }
+        }
+
+        /// <summary>
+        /// Background Color. Default is white
+        /// </summary>
+        public short BackgroundColorIndex
+        {
+            get => _backgroundColorIndex;
+            set
+            {
+                _backgroundColorIndex = value;
+
+                if (colors.TryGetValue(value, out var r))
+                    BackgroundColor = new XSSFColor(r.IndexedColor);
+            }
+        }
 
         /// <summary>
         /// Foreground Color
