@@ -1,108 +1,114 @@
-﻿using NPOI.SS.UserModel;
+﻿namespace Simple.ExportToExcel;
+
+using NPOI.SS.UserModel;
+
 using Simple.ExportToExcel.Attributes;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace Simple.ExportToExcel
+public class HeaderBuilder<T>
 {
-    public class HeaderBuilder<T>
+    IRow HeaderRow;
+    ISheet ExcelSheet;
+    SpreadSheetAttribute Attribute;
+    readonly ICellStyle CellStyle;
+    readonly IWorkbook workBook;
+    readonly IList<ICell> headerCells = [];
+    readonly IList<PropertyInfo> columnProperties = [];
+
+    public HeaderBuilder(ExcelDocumentRequest<T> Request)
     {
-        IRow HeaderRow;
-        ISheet ExcelSheet;
-        SpreadSheetAttribute Attribute;
-        readonly ICellStyle CellStyle;
-        readonly IWorkbook workBook;
-        readonly IList<ICell> headerCells = new List<ICell>();
-        readonly IList<PropertyInfo> columnProperties = new List<PropertyInfo>();
+        EntityType = typeof(T);
+        workBook = Request.Workbook;
+        CellStyle = Request.HeaderStyle.GenerateStyleObject(workBook);
+    }
 
-        public HeaderBuilder(ExcelDocumentRequest<T> Request)
+    public HeaderBuilder(HeaderStyle HeaderStyle, IWorkbook workBook)
+    {
+        EntityType = typeof(T);
+        this.workBook = workBook;
+        CellStyle = HeaderStyle.GenerateStyleObject(workBook);
+    }
+
+    public Type EntityType { get; }
+    public IEnumerable<PropertyInfo> ColumnProperties { get => columnProperties; }
+    public IEnumerable<ICell> HeaderCells { get => headerCells; }
+
+    public ISheet Build(string FileName)
+    {
+        if (workBook == null)
         {
-            EntityType = typeof(T);
-            workBook = Request.Workbook;
-            CellStyle = Request.HeaderStyle.GenerateStyleObject(workBook);
+            throw new NullReferenceException(nameof(workBook));
         }
 
-        public HeaderBuilder(HeaderStyle HeaderStyle, IWorkbook workBook)
+        ExcelSheet = workBook.CreateSheet(FileName);
+        HeaderRow = ExcelSheet.CreateRow(0);
+
+        if (TryGetSpreadSheetMetaData())
         {
-            EntityType = typeof(T);
-            this.workBook = workBook;
-            CellStyle = HeaderStyle.GenerateStyleObject(workBook);
+            CreateCellsByAttribute();
+        }
+        else
+        {
+            CreateCellsByReflection();
         }
 
-        public Type EntityType { get; }
-        public IEnumerable<PropertyInfo> ColumnProperties { get => columnProperties; }
-        public IEnumerable<ICell> HeaderCells { get => headerCells; }
+        return ExcelSheet;
+    }
 
-        public ISheet Build(string FileName)
+    void AddCell(int Column, string CellValue)
+    {
+        ICell HeaderCell = HeaderRow.CreateCell(Column);
+        HeaderCell.CellStyle = CellStyle;
+        HeaderCell.SetCellValue(CellValue);
+
+        headerCells.Add(HeaderCell);
+    }
+    bool TryGetSpreadSheetMetaData()
+    {
+        Attribute = typeof(T).GetCustomAttribute<SpreadSheetAttribute>();
+
+        return Attribute != null;
+    }
+    void CreateCellsByAttribute()
+    {
+        foreach (SpreadSheetColumnAttribute item in Attribute.Columns)
         {
-            if (workBook == null)
-                throw new NullReferenceException(nameof(workBook));
+            columnProperties.Add(item.Property);
 
-            ExcelSheet = workBook.CreateSheet(FileName);
-            HeaderRow = ExcelSheet.CreateRow(0);
-
-            if (TryGetSpreadSheetMetaData())
-                CreateCellsByAttribute();
-
-            else
-                CreateCellsByReflection();
-
-            return ExcelSheet;
+            AddCell(item.ColumnIndex, item.Name);
         }
+    }
+    void CreateCellsByReflection()
+    {
+        List<PropertyInfo> Properties = EntityType
+                .GetProperties()
+                .ToList();
 
-        void AddCell(int Column, string CellValue)
-        {
-            var HeaderCell = HeaderRow.CreateCell(Column);
-            HeaderCell.CellStyle = CellStyle;
-            HeaderCell.SetCellValue(CellValue);
+        int ColumnIndex = 0;
 
-            headerCells.Add(HeaderCell);
-        }
-        bool TryGetSpreadSheetMetaData()
+        foreach (PropertyInfo item in Properties)
         {
-            Attribute = typeof(T).GetCustomAttribute<SpreadSheetAttribute>();
+            columnProperties.Add(item);
 
-            return Attribute != null;
-        }
-        void CreateCellsByAttribute()
-        {
-            foreach (var item in Attribute.Columns)
+            if (item.IsList())
             {
-                columnProperties.Add(item.Property);
 
-                AddCell(item.ColumnIndex, item.Name);
             }
-        }
-        void CreateCellsByReflection()
-        {
-            var Properties = EntityType
-                    .GetProperties()
-                    .ToList();
-
-            var ColumnIndex = 0;
-
-            foreach (var item in Properties)
+            else
             {
-                columnProperties.Add(item);
-
-                if (item.IsList())
+                MemberInfo[] MemberInfoArray = EntityType.GetMember(item.Name);
+                if (MemberInfoArray != null && MemberInfoArray[0] != null)
                 {
-
-                }
-                else
-                {
-                    var MemberInfoArray = EntityType.GetMember(item.Name);
-                    if (MemberInfoArray != null && MemberInfoArray[0] != null)
+                    DisplayAttribute attribute = MemberInfoArray[0].GetCustomAttribute<DisplayAttribute>();
+                    if (attribute != null)
                     {
-                        var attribute = MemberInfoArray[0].GetCustomAttribute<DisplayAttribute>();
-                        if (attribute != null)
-                        {
-                            AddCell(ColumnIndex, attribute.Name);
-                            ColumnIndex++;
-                        }
+                        AddCell(ColumnIndex, attribute.Name);
+                        ColumnIndex++;
                     }
                 }
             }

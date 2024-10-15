@@ -1,8 +1,7 @@
-﻿namespace Simple.ExportToExcel
+﻿namespace Simple.ExportToExcel;
+
+public abstract record UploadResponse
 {
-    public abstract record UploadResponse
-    {
-        public string FileName { get; init; }
-        public string ContentType { get; init; }
-    }
+    public string FileName { get; init; }
+    public string ContentType { get; init; }
 }

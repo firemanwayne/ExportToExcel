@@ -1,7 +1,6 @@
-﻿namespace Simple.ExportToExcel
+﻿namespace Simple.ExportToExcel;
+
+public class BodyStyle : ExcelStyle
 {
-    public class BodyStyle : ExcelStyle
-    {
-        public BodyStyle() : base() { }
-    }
+    public BodyStyle() : base() { }
 }

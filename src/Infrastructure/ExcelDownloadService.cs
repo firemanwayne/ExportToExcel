@@ -1,38 +1,41 @@
 ﻿using Microsoft.JSInterop;
+
 using System;
 using System.Threading.Tasks;
 
-namespace Simple.ExportToExcel
+namespace Simple.ExportToExcel;
+
+internal class ExcelDownloadService : IExcelDownloadService
 {
-    internal class ExcelDownloadService : IExcelDownloadService
+    static string ExportUriFunctionName => "ExportFileToUri";
+    static string ExportLocalFunctionName => "ExportFile";
+
+    readonly Lazy<Task<IJSObjectReference>> moduleTask;
+
+    public ExcelDownloadService(IJSRuntime JS)
+        => moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>(
+            "import", "./_content/Simple.ExportToExcel/ToExcel.js").AsTask());
+
+    public async ValueTask ExportFile(UploadResponse Response)
     {
-        static string ExportUriFunctionName => "ExportFileToUri";
-        static string ExportLocalFunctionName => "ExportFile";
+        IJSObjectReference module = await moduleTask.Value;
 
-        readonly Lazy<Task<IJSObjectReference>> moduleTask;
-
-        public ExcelDownloadService(IJSRuntime JS) 
-            => moduleTask = new(() => JS.InvokeAsync<IJSObjectReference>(
-                "import", "./_content/Simple.ExportToExcel/ToExcel.js").AsTask());        
-
-        public async ValueTask ExportFile(UploadResponse Response)
+        if (Response is UploadFileResponse f)
         {
-            var module = await moduleTask.Value;
-
-            if (Response is UploadFileResponse f)
-                await module.InvokeVoidAsync(ExportUriFunctionName, f.FileName, f.FileUri);
-
-            else if (Response is UploadFileLocalResponse l)
-                await module.InvokeVoidAsync(ExportLocalFunctionName, l.FileName, l.FileContent, l.ContentType);
+            await module.InvokeVoidAsync(ExportUriFunctionName, f.FileName, f.FileUri);
         }
-
-        public async ValueTask DisposeAsync()
+        else if (Response is UploadFileLocalResponse l)
         {
-            if (moduleTask.IsValueCreated)
-            {
-                var module = await moduleTask.Value;
-                await module.DisposeAsync();
-            }
+            await module.InvokeVoidAsync(ExportLocalFunctionName, l.FileName, l.FileContent, l.ContentType);
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (moduleTask.IsValueCreated)
+        {
+            IJSObjectReference module = await moduleTask.Value;
+            await module.DisposeAsync();
         }
     }
 }

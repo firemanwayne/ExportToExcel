@@ -1,7 +1,6 @@
-﻿namespace Simple.ExportToExcel
+﻿namespace Simple.ExportToExcel;
+
+public record UploadFileLocalResponse : UploadResponse
 {
-    public record UploadFileLocalResponse : UploadResponse
-    {
-        public string FileContent { get; init; }
-    }
+    public string FileContent { get; init; }
 }

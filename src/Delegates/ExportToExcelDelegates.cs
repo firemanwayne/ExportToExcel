@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
+﻿namespace Simple.ExportToExcel.Delegates;
+using System.Threading.Tasks;
 
-namespace Simple.ExportToExcel.Delegates
-{
-    public delegate Task<UploadResponse> UploadFileEventHandler(ExcelDocumentResponse response);
-}
+public delegate Task<UploadResponse> UploadFileEventHandler(ExcelDocumentResponse response);

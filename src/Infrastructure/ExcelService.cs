@@ -2,40 +2,39 @@
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Simple.ExportToExcel
+namespace Simple.ExportToExcel;
+
+internal class ExcelService<T> : IExportToExcel<T>
 {
-    internal class ExcelService<T> : IExportToExcel<T>
+    public ExcelService() { }
+
+    public Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> Request)
     {
-        public ExcelService() { }
-
-        public Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> Request)
+        try
         {
-            try
-            {
-                BuildSpreadsheet(Request);
+            BuildSpreadsheet(Request);
 
-                using var ms = new MemoryStream();
-                Request.Workbook.Write(ms);
+            using MemoryStream ms = new();
+            Request.Workbook.Write(ms);
 
-                return Task.FromResult(
-                    new ExcelDocumentResponse(Request.FileName)
-                    {
-                        SpreadSheetBytes = ms.ToArray(),
-                    });
-            }
-            catch (Exception ex)
-            {
-                return Task.FromResult(new ExcelDocumentResponse(ex));
-            }
+            return Task.FromResult(
+                new ExcelDocumentResponse(Request.FileName)
+                {
+                    SpreadSheetBytes = ms.ToArray(),
+                });
         }
-
-        static void BuildSpreadsheet(ExcelDocumentRequest<T> Request)
+        catch (Exception ex)
         {
-            var header = new HeaderBuilder<T>(Request);
-
-            var body = new BodyBuilder<T>(Request, header);
-
-            ExcelBuilder.Build(Request.FileName, body, header);
+            return Task.FromResult(new ExcelDocumentResponse(ex));
         }
+    }
+
+    static void BuildSpreadsheet(ExcelDocumentRequest<T> Request)
+    {
+        HeaderBuilder<T> header = new(Request);
+
+        BodyBuilder<T> body = new(Request, header);
+
+        ExcelBuilder.Build(Request.FileName, body, header);
     }
 }

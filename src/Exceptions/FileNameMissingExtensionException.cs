@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Simple.ExportToExcel
+namespace Simple.ExportToExcel;
+
+internal class FileNameMissingExtensionException : Exception
 {
-    internal class FileNameMissingExtensionException : Exception
-    {
-        public FileNameMissingExtensionException() : base("The file name provided is missing the extension")
-        { }
-    }
+    public FileNameMissingExtensionException() : base("The file name provided is missing the extension")
+    { }
 }

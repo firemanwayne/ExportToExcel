@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-	  <TargetFramework>net6.0</TargetFramework>    
+	  <TargetFramework>net8.0</TargetFramework>    
 	  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	  <Product>Simple.ExportToExcel</Product>
 	  <PackageId>Simple.ExportToExcel</PackageId>
@@ -11,20 +11,20 @@
 	  <Description>Library that allows data to be exported as an Excel Spreadsheet</Description>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-
   <ItemGroup>	   
-	  <PackageReference Include="NPOI" Version="2.5.6" />
-	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.7" />
-	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+	  <PackageReference Include="NPOI" Version="2.7.1" />
+	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.10" />
+	  <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Update="wwwroot\ToExcel.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>   
+  </ItemGroup>
+
+	<ItemGroup>
+		<InternalsVisibleTo Include="Simple.ExportToExcel.UnitTests" />
+	</ItemGroup>
 
 </Project>

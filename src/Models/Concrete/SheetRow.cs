@@ -1,36 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Simple.ExportToExcel
+namespace Simple.ExportToExcel;
+
+/// <summary>
+/// Represents a row in a spreadsheet
+/// </summary>
+public class SheetRow
 {
-    /// <summary>
-    /// Represents a row in a spreadsheet
-    /// </summary>
-    public class SheetRow
+    readonly IList<SheetColumn> columns = new List<SheetColumn>();
+
+    public SheetRow(int index, object value)
     {
-        readonly IList<SheetColumn> columns = new List<SheetColumn>();
+        Index = index;
 
-        public SheetRow(int index, object value)
+        if (value is string s)
         {
-            Index = index;
+            string[] stringValues = s.Split(',');
 
-            if (value is string s)
+            if (stringValues != null)
             {
-                var stringValues = s.Split(',');
+                foreach (string item in stringValues)
+                {
+                    int columnIndex = Array.BinarySearch(stringValues, item);
 
-                if (stringValues != null)
-                    foreach (var item in stringValues)
+                    if (columnIndex > -1)
                     {
-                        var columnIndex = Array.BinarySearch(stringValues, item);
-
-                        if (columnIndex > -1)
-                            columns.Add(new SheetColumn(Index, columnIndex, item));
+                        columns.Add(new SheetColumn(Index, columnIndex, item));
                     }
+                }
             }
         }
-
-        public int Index { get; }
-        public int ColumnCount => columns.Count;
-        public ICollection<SheetColumn> Columns => columns;
     }
+
+    public int Index { get; }
+    public int ColumnCount => columns.Count;
+    public ICollection<SheetColumn> Columns => columns;
 }
