@@ -9,7 +9,6 @@ namespace Simple.ExportToExcel;
 
 public abstract class ExcelStyle
 {
-    short _foregroundColorIndex;
     static readonly IDictionary<short, ExcelColors> colors = new Dictionary<short, ExcelColors>();
 
     public ExcelStyle()
@@ -48,12 +47,12 @@ public abstract class ExcelStyle
     /// <summary>
     /// Foreground Color
     /// </summary>
-    public XSSFColor ForegroundColor { get; private set; } = new XSSFColor(IndexedColors.White);
+    public XSSFColor ForegroundColor { get; private set; } = new XSSFColor(new byte[] { 255, 255, 255 }, null);
 
     /// <summary>
     /// Background Color. Default is white
     /// </summary>
-    public XSSFColor BackgroundColor { get; private set; } = new XSSFColor(IndexedColors.White);
+    public XSSFColor BackgroundColor { get; private set; } = new XSSFColor(new byte[] { 255, 255, 255 }, null);
 
     /// <summary>
     /// Vertical Alignment
@@ -94,7 +93,11 @@ public abstract class ExcelStyle
     /// Sets the Foreground color of the spreadsheet
     /// </summary>
     /// <param name="a"></param>
-    public void SetForegroundColor(StyleColorSelectedEventArgs a) => _foregroundColorIndex = a.ColorIndex;
+    public void SetForegroundColor(StyleColorSelectedEventArgs a)
+    {
+        if (colors.TryGetValue(a.ColorIndex, out ExcelColors color))
+            ForegroundColor = new XSSFColor(color.IndexedColor.RGB, null);
+    }
 
     /// <summary>
     /// Sets the horizontal alignment of the spreadsheet

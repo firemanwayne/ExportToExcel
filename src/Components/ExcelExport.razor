@@ -71,7 +71,7 @@
         return base.OnParametersSetAsync();
     }
 
-    async void HandleExport()
+    async Task HandleExport()
     {
         if (RequestDelegate != null)
             await Export();

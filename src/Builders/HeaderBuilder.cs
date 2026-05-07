@@ -105,11 +105,8 @@ public class HeaderBuilder<T>
                 if (MemberInfoArray != null && MemberInfoArray[0] != null)
                 {
                     DisplayAttribute attribute = MemberInfoArray[0].GetCustomAttribute<DisplayAttribute>();
-                    if (attribute != null)
-                    {
-                        AddCell(ColumnIndex, attribute.Name);
-                        ColumnIndex++;
-                    }
+                    AddCell(ColumnIndex, attribute?.Name ?? item.Name);
+                    ColumnIndex++;
                 }
             }
         }

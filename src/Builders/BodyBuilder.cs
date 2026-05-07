@@ -11,8 +11,8 @@ public class BodyBuilder<T>
 {
     ISheet ExcelSheet;
     readonly HeaderBuilder<T> Header;
-    static ICellStyle BodyCellStyle;
-    static ICellStyle HeaderCellStyle;
+    ICellStyle BodyCellStyle;
+    ICellStyle HeaderCellStyle;
 
     public BodyBuilder(ExcelDocumentRequest<T> Request, HeaderBuilder<T> Header)
     {
@@ -72,7 +72,7 @@ public class BodyBuilder<T>
             }
         }
     }
-    static void CreateCell(IRow BodyRow, int Column, object Value)
+    void CreateCell(IRow BodyRow, int Column, object Value)
     {
         ICell Cell = BodyRow.CreateCell(Column);
         Cell.CellStyle = BodyCellStyle;
@@ -100,7 +100,7 @@ public class BodyBuilder<T>
                 break;
         }
     }
-    static void CreateBodyRowFromGenericList(T Parent, PropertyInfo Entity, ISheet ExcelSheet, int RowCount)
+    void CreateBodyRowFromGenericList(T Parent, PropertyInfo Entity, ISheet ExcelSheet, int RowCount)
     {
         string propertyName = Entity.Name;
 
@@ -118,7 +118,8 @@ public class BodyBuilder<T>
         for (int h = 0; h < ListPropertyList.Count; h++)
         {
             object[] attributes = ListPropertyList[h]?.GetCustomAttributes(typeof(DisplayAttribute), false);
-            string DisplayName = ((DisplayAttribute)attributes[0]).Name;
+            DisplayAttribute displayAttr = attributes?.Length > 0 ? (DisplayAttribute)attributes[0] : null;
+            string DisplayName = displayAttr?.Name ?? ListPropertyList[h].Name;
 
             ICell BodyHeaderCell = HeaderColumnRow1.CreateCell(h);
             BodyHeaderCell.CellStyle = HeaderCellStyle;

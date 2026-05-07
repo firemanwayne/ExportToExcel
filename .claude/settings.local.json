@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:\\\\source\\\\repos\\\\ExportToExcel\" && dotnet build 2>&1)",
+      "Bash(powershell -Command \"\nAdd-Type -Path 'C:\\\\Users\\\\wayne.davis\\\\.nuget\\\\packages\\\\npoi\\\\2.8.0\\\\lib\\\\net10.0\\\\NPOI.Core.dll'\nAdd-Type -Path 'C:\\\\Users\\\\wayne.davis\\\\.nuget\\\\packages\\\\npoi\\\\2.8.0\\\\lib\\\\net10.0\\\\NPOI.OOXML.dll'\n\\\\$type = [NPOI.XSSF.UserModel.XSSFColor]\n\\\\$type.GetConstructors\\(\\) | ForEach-Object { \\\\$_.ToString\\(\\) }\n\" 2>&1)",
+      "Bash(powershell -Command \"\n\\\\$dll = 'C:\\\\Users\\\\wayne.davis\\\\.nuget\\\\packages\\\\npoi\\\\2.8.0\\\\lib\\\\net10.0\\\\NPOI.OOXML.dll'\n\\\\$bytes = [System.IO.File]::ReadAllBytes\\(\\\\$dll\\)\n\\\\$asm = [System.Reflection.Assembly]::Load\\(\\\\$bytes\\)\n\\\\$type = \\\\$asm.GetTypes\\(\\) | Where-Object { \\\\$_.Name -eq 'XSSFColor' }\n\\\\$type.GetConstructors\\(\\) | ForEach-Object { \\\\$_.ToString\\(\\) }\n\" 2>&1)",
+      "Bash(cd \"D:\\\\source\\\\repos\\\\ExportToExcel\" && gh secret set NUGET_API_KEY --body \"REPLACE_ME\")"
+    ]
+  }
+}
