@@ -80,7 +80,7 @@ Thank you to Andre' Rizzato for discovering an implementation issue and providin
 
 **Change Log**
 
-[Version 1.1.0.1]
+[Version 2.0.0]
 - Changed how cell value is set so that the correct type is used. Type integer was causing formatting warnings in the exported Excel file
 - Updated to .NET 10.0
 - Migrated to Central Package Management (CPM)
