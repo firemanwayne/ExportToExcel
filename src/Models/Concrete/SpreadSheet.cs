@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 
-using System.Collections.Generic;
-
 namespace Simple.ExportToExcel;
 
 /// <summary>
@@ -9,7 +7,7 @@ namespace Simple.ExportToExcel;
 /// </summary>
 public class SpreadSheet : ImportDocument
 {
-    readonly IList<SheetRow> rows = new List<SheetRow>();
+    readonly IList<SheetRow> _rows = new List<SheetRow>();
 
     public SpreadSheet() { }
     public SpreadSheet(IBrowserFile file)
@@ -19,17 +17,32 @@ public class SpreadSheet : ImportDocument
         ContentType = file.ContentType;
     }
 
-    public int RowCount => rows.Count;
-    public ICollection<SheetRow> DataRows => rows;
+    /// <summary>The total number of data rows currently in the spreadsheet.</summary>
+    public int RowCount => _rows.Count;
+
+    /// <summary>The collection of all data rows in the spreadsheet.</summary>
+    public ICollection<SheetRow> DataRows => _rows;
+
+    /// <summary>
+    /// Adds a new row by wrapping <paramref name="Value"/> in a <see cref="SheetRow"/> at the next available index.
+    /// </summary>
+    /// <param name="Value">The row data to add. Comma-delimited strings are split into columns.</param>
+    /// <returns>The current <see cref="SpreadSheet"/> instance for fluent chaining.</returns>
     public SpreadSheet AddRow(object Value)
     {
-        rows.Add(new SheetRow(RowCount, Value));
+        _rows.Add(new SheetRow(RowCount, Value));
 
         return this;
     }
+
+    /// <summary>
+    /// Adds a pre-constructed <see cref="SheetRow"/> to the spreadsheet.
+    /// </summary>
+    /// <param name="row">The row to add.</param>
+    /// <returns>The current <see cref="SpreadSheet"/> instance for fluent chaining.</returns>
     public SpreadSheet AddRow(SheetRow row)
     {
-        rows.Add(row);
+        _rows.Add(row);
 
         return this;
     }

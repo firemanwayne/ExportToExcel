@@ -1,13 +1,20 @@
-﻿using System;
-using System.IO;
-using System.Threading.Tasks;
+﻿using System.IO;
 
 namespace Simple.ExportToExcel;
 
+/// <summary>
+/// Internal implementation of <see cref="IExportToExcel{T}"/> that orchestrates building
+/// and serializing an Excel spreadsheet to a byte array.
+/// </summary>
+/// <typeparam name="T">The entity type to export.</typeparam>
 internal class ExcelService<T> : IExportToExcel<T>
 {
+    /// <summary>
+    /// Initializes a new instance of <see cref="ExcelService{T}"/>.
+    /// </summary>
     public ExcelService() { }
 
+    /// <inheritdoc/>
     public Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> Request)
     {
         try
@@ -29,6 +36,10 @@ internal class ExcelService<T> : IExportToExcel<T>
         }
     }
 
+    /// <summary>
+    /// Creates the <see cref="HeaderBuilder{T}"/> and <see cref="BodyBuilder{T}"/> instances
+    /// and delegates to <see cref="ExcelBuilder"/> to assemble the worksheet.
+    /// </summary>
     static void BuildSpreadsheet(ExcelDocumentRequest<T> Request)
     {
         HeaderBuilder<T> header = new(Request);

@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Simple.ExportToExcel;
+﻿namespace Simple.ExportToExcel;
 
 /// <summary>
 /// Response returned after a spreadsheet has been generated
@@ -11,13 +9,17 @@ public class ExcelDocumentResponse
     /// Creates a response object after a spreadsheet has been generated
     /// </summary>
     /// <param name="FileName">Filename of the spreadsheet</param>
-    public ExcelDocumentResponse(string FileName)
+    public ExcelDocumentResponse(string fileName)
     {
-        this.FileName = FileName;
+        FileName = fileName;
         ContentType = ExcelConstants.Excel;
         IsSuccessful = true;
     }
 
+    /// <summary>
+    /// Creates a failure response capturing the exception that caused the export to fail.
+    /// </summary>
+    /// <param name="ex">The exception that occurred during export.</param>
     public ExcelDocumentResponse(Exception ex)
     {
         Exception = ex;
@@ -49,5 +51,8 @@ public class ExcelDocumentResponse
     /// </summary>
     public bool IsSuccessful { get; }
 
+    /// <summary>
+    /// The exception that caused the export to fail, or <c>null</c> if the operation succeeded.
+    /// </summary>
     public Exception Exception { get; }
 }

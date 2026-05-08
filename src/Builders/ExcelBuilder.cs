@@ -1,21 +1,25 @@
 ﻿namespace Simple.ExportToExcel;
 
+/// <summary>
+/// Orchestrates the assembly of an Excel spreadsheet by coordinating
+/// <see cref="HeaderBuilder{T}"/> and <see cref="BodyBuilder{T}"/>.
+/// </summary>
 public class ExcelBuilder
 {
     private ExcelBuilder()
     { }
 
     /// <summary>
-    /// Builds the Excel Spreadsheet from the Header Builder and BodyBuilder classes
+    /// Builds the Excel spreadsheet by first creating the header row then populating the data rows.
     /// </summary>
-    /// <typeparam name="T">Type of Data Object</typeparam>
-    /// <param name="WorkBook">Instance of the Workbook</param>
-    /// <param name="FileName">Spreadsheet's file name</param>
-    /// <param name="Body">Body of the spreadsheet</param>
-    /// <param name="Header">Header of the Spreadsheet</param>
-    public static void Build<T>(string FileName, BodyBuilder<T> Body, HeaderBuilder<T> Header)
+    /// <typeparam name="T">The type of entity being exported.</typeparam>
+    /// <param name="fileName">The sheet tab name used when creating the worksheet.</param>
+    /// <param name="body">The body builder that writes data rows.</param>
+    /// <param name="header">The header builder that creates the header row and worksheet.</param>
+    public static void Build<T>(string fileName, BodyBuilder<T> body, HeaderBuilder<T> header)
     {
-        NPOI.SS.UserModel.ISheet Sheet = Header.Build(FileName);
-        Body.Build(Sheet);
+        ISheet sheet = header.Build(fileName);
+
+        body.Build(sheet);
     }
 }

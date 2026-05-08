@@ -1,56 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿namespace Simple.ExportToExcel.Attributes;
 
-namespace Simple.ExportToExcel.Attributes;
-
-[AttributeUsage(AttributeTargets.Class)]
-public class SpreadSheetAttribute : Attribute
-{
-    private readonly IList<SpreadSheetColumnAttribute> columns = new List<SpreadSheetColumnAttribute>();
-
-    public SpreadSheetAttribute(string Name, Type Type) : base()
-    {
-        this.Name = Name;
-        this.Type = Type;
-
-        GetColumnIndexes();
-    }
-
-    public string Name { get; }
-    public Type Type { get; }
-
-    public IEnumerable<SpreadSheetColumnAttribute> Columns { get => columns.OrderBy(c => c.ColumnIndex); }
-
-    void GetColumnIndexes()
-    {
-        PropertyInfo[] props = Type.GetProperties();
-        foreach (PropertyInfo p in props)
-        {
-            SpreadSheetColumnAttribute columnAttr = p.GetCustomAttribute<SpreadSheetColumnAttribute>();
-            if (columnAttr != null)
-            {
-                columnAttr.SetProperty(p);
-
-                columns.Add(columnAttr);
-            }
-        }
-    }
-}
-
+/// <summary>
+/// Marks a property as a spreadsheet column with an explicit header name and column position.
+/// Used in conjunction with <see cref="SpreadSheetAttribute"/> on the containing class.
+/// </summary>
 [AttributeUsage(AttributeTargets.Property)]
 public class SpreadSheetColumnAttribute : Attribute
 {
-    public SpreadSheetColumnAttribute(string Name, int ColumnIndex) : base()
+    /// <summary>
+    /// Initializes a new <see cref="SpreadSheetColumnAttribute"/> with the column header name and position.
+    /// </summary>
+    /// <param name="name">The text to display in the column header cell.</param>
+    /// <param name="columnIndex">The zero-based index of this column in the spreadsheet.</param>
+    public SpreadSheetColumnAttribute(string name, int columnIndex) : base()
     {
-        this.Name = Name;
-        this.ColumnIndex = ColumnIndex;
+        Name = name;
+        ColumnIndex = columnIndex;
     }
 
+    /// <summary>The text displayed in the column header cell.</summary>
     public string Name { get; }
+
+    /// <summary>The zero-based column index in the spreadsheet.</summary>
     public int ColumnIndex { get; }
+
+    /// <summary>The <see cref="PropertyInfo"/> of the decorated property. Set during attribute initialization.</summary>
     public PropertyInfo Property { get; private set; }
 
+    /// <summary>
+    /// Assigns the reflected <see cref="PropertyInfo"/> to this attribute. Called by <see cref="SpreadSheetAttribute"/>.
+    /// </summary>
+    /// <param name="p">The property that carries this attribute.</param>
     internal void SetProperty(PropertyInfo p) => Property = p;
 }

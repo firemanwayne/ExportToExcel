@@ -4,23 +4,49 @@ using System.Collections.Generic;
 
 namespace Simple.ExportToExcel.Styles;
 
+/// <summary>
+/// Wraps an NPOI <see cref="IndexedColors"/> value with a display name and pre-computed
+/// CSS RGB string, and provides a static catalogue of all supported spreadsheet colors.
+/// </summary>
 public class ExcelColors
 {
-    public ExcelColors(IndexedColors c, string Name)
+    /// <summary>
+    /// Initializes an <see cref="ExcelColors"/> entry from an NPOI <see cref="IndexedColors"/> value.
+    /// </summary>
+    /// <param name="c">The NPOI indexed color.</param>
+    /// <param name="name">A human-readable display name for the color.</param>
+    public ExcelColors(IndexedColors c, string name)
     {
         Id = c.Index;
-        this.Name = Name;
+        Name = name;
         RGBValue = $"rgb({c.RGB[0]}, {c.RGB[1]}, {c.RGB[2]})";
 
         IndexedColor = c;
     }
 
+    /// <summary>
+    /// The NPOI palette index that uniquely identifies this color.
+    /// </summary>
     public short Id { get; }
+
+    /// <summary>
+    /// Human-readable display name of the color (e.g. "Light Blue").
+    /// </summary>
     public string Name { get; }
+
+    /// <summary>
+    /// CSS-style RGB string for the color (e.g. <c>rgb(173, 216, 230)</c>).
+    /// </summary>
     public string RGBValue { get; }
 
+    /// <summary>
+    /// The underlying NPOI <see cref="IndexedColors"/> value, used to obtain raw RGB bytes.
+    /// </summary>
     public IndexedColors IndexedColor { get; }
 
+    /// <summary>
+    /// A static catalogue of all supported colors keyed by their NPOI palette index.
+    /// </summary>
     public static readonly IDictionary<short, ExcelColors> ColorCollection = new Dictionary<short, ExcelColors>
     {
         { IndexedColors.Aqua.Index, new(IndexedColors.Aqua, "Aqua") },

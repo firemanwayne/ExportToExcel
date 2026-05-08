@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-
-namespace Simple.ExportToExcel;
+﻿namespace Simple.ExportToExcel;
 
 /// <summary>
 /// Generates Excel spreadsheets
@@ -9,11 +7,13 @@ namespace Simple.ExportToExcel;
 public interface IExportToExcel<T>
 {
     /// <summary>
-    /// Generates an Excel spreadsheet for a list of Entities
+    /// Generates an Excel spreadsheet from the data in <paramref name="request"/> and
+    /// returns the result as a byte array wrapped in an <see cref="ExcelDocumentResponse"/>.
     /// </summary>
-    /// <param name="Entities">The data to be in the spreadsheet</param>
-    /// <param name="FileName">The name you would like the spreadsheet to be saved to</param>
-    /// <param name="ContainerName">The name of the Azure Blob Container you want to store the generated spreadsheet</param>        
-    /// <returns></returns>
-    Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> Request);
+    /// <param name="request">The request containing the data, file name, and style configuration.</param>
+    /// <returns>
+    /// An <see cref="ExcelDocumentResponse"/> containing the spreadsheet bytes on success,
+    /// or the caught exception on failure.
+    /// </returns>
+    Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> request);
 }

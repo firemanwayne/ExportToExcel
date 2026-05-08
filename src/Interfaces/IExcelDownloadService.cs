@@ -1,7 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-
-namespace Simple.ExportToExcel;
+﻿namespace Simple.ExportToExcel;
 
 /// <summary>
 /// Download exported excel File to the browser
@@ -9,9 +6,11 @@ namespace Simple.ExportToExcel;
 internal interface IExcelDownloadService : IAsyncDisposable
 {
     /// <summary>
-    /// Downloads the excel file to the browser
+    /// Triggers a file download in the browser based on the type of <see cref="UploadResponse"/>.
+    /// Uses a URI-based download for <see cref="UploadFileResponse"/> or inline content for
+    /// <see cref="UploadFileLocalResponse"/>.
     /// </summary>
-    /// <param name="Response"></param>
-    /// <returns></returns>
+    /// <param name="Response">The upload response containing the file data or URI.</param>
+    /// <returns>A <see cref="ValueTask"/> representing the asynchronous operation.</returns>
     ValueTask ExportFile(UploadResponse Response);
 }

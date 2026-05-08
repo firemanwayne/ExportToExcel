@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿namespace Simple.ExportToExcel;
 
-namespace Simple.ExportToExcel;
-
+/// <summary>
+/// Provides a static mapping of file extensions to MIME type strings,
+/// and utility methods to look up MIME types by extension or file name.
+/// </summary>
 internal class MimeMapping
 {
     private MimeMapping() { }
 
+    /// <summary>
+    /// Dictionary mapping file extensions (including the leading dot) to their <see cref="Extension"/> entries.
+    /// </summary>
     public static IDictionary<string, Extension> Extensions = new Dictionary<string, Extension>
     {
         {".acx", new Extension(".acx", "application/internet-property-stream")},
@@ -205,6 +208,10 @@ internal class MimeMapping
         {".*", new Extension(".*", "application/octet-stream")}
     };
 
+    /// <summary>
+    /// Returns an ordered dictionary of all registered MIME types with their media category and extension.
+    /// </summary>
+    /// <returns>A dictionary keyed by file extension with formatted type descriptions as values.</returns>
     public static IDictionary<string, string> GetAllMimeTypes()
     {
         Dictionary<string, string> OrderedDictionary = new();
@@ -216,6 +223,12 @@ internal class MimeMapping
         return OrderedDictionary;
     }
 
+    /// <summary>
+    /// Returns the MIME type string for the given file extension, or the default
+    /// octet-stream type if the extension is not registered.
+    /// </summary>
+    /// <param name="fileExtension">The file extension to look up, including the leading dot.</param>
+    /// <returns>The MIME type string for the extension.</returns>
     public static string GetMimeMappingByExtension(string fileExtension)
     {
         if (Extensions.ContainsKey(fileExtension))
@@ -228,11 +241,17 @@ internal class MimeMapping
         }
     }
 
-    public static string GetMimeFromFileName(string FileName)
+    /// <summary>
+    /// Extracts the extension from a file name and returns the corresponding MIME type.
+    /// </summary>
+    /// <param name="fileName">The full file name including extension.</param>
+    /// <returns>The MIME type string for the file's extension.</returns>
+    /// <exception cref="FileNameMissingExtensionException">Thrown when <paramref name="fileName"/> has no extension.</exception>
+    public static string GetMimeFromFileName(string fileName)
     {
-        if (!IsExtensionMissing(FileName))
+        if (!IsExtensionMissing(fileName))
         {
-            string[] ValueArray = FileName.Split('.');
+            string[] ValueArray = fileName.Split('.');
             if (ValueArray.Length > 1)
             {
                 if (Extensions.ContainsKey($".{ValueArray[1]}"))
@@ -253,9 +272,14 @@ internal class MimeMapping
         }
     }
 
-    public static bool IsExtensionMissing(string FileName)
+    /// <summary>
+    /// Determines whether the given file name is missing a file extension.
+    /// </summary>
+    /// <param name="fileName">The file name to check.</param>
+    /// <returns><c>true</c> if no extension is present; otherwise <c>false</c>.</returns>
+    public static bool IsExtensionMissing(string fileName)
     {
-        string[] ValueArray = FileName.Split('.');
+        string[] ValueArray = fileName.Split('.');
         if (ValueArray.Length > 1)
         {
             return false;
@@ -266,12 +290,17 @@ internal class MimeMapping
         }
     }
 
-    public static List<string> GetMimeMappingsByType(string MimeTypeName)
+    /// <summary>
+    /// Returns all file extensions that are registered under the given MIME type.
+    /// </summary>
+    /// <param name="mimeTypeName">The MIME type string to search for (e.g. <c>image/jpeg</c>).</param>
+    /// <returns>A list of matching file extensions.</returns>
+    public static List<string> GetMimeMappingsByType(string mimeTypeName)
     {
         List<string> Mimes = new();
         foreach (KeyValuePair<string, Extension> item in Extensions)
         {
-            if (Extensions.Values.Select(m => m.Value).Contains(MimeTypeName))
+            if (Extensions.Values.Select(m => m.Value).Contains(mimeTypeName))
             {
                 Mimes.Add(item.Key);
             }
@@ -280,28 +309,15 @@ internal class MimeMapping
         return Mimes;
     }
 
-    static string GetMediaType(string MediaTypeName)
+    static string GetMediaType(string mediaTypeName)
     {
-        string[] MediaTypeArray = MediaTypeName.Split('/');
-        return MediaTypeArray[0];
+        string[] mediaTypeArray = mediaTypeName.Split('/');
+        return mediaTypeArray[0];
     }
 
-    static string GetMediaName(string MediaTypeName)
+    static string GetMediaName(string mediaTypeName)
     {
-        return MediaTypeName.Split('/').Length > 0 ?
-            MediaTypeName.Split('/')[1] : "Unknown";
-    }
-}
-
-public struct Extension
-{
-    public string Key { get; set; }
-
-    public string Value { get; set; }
-
-    public Extension(string Key, string Value)
-    {
-        this.Key = Key;
-        this.Value = Value;
+        return mediaTypeName.Split('/').Length > 0 ?
+            mediaTypeName.Split('/')[1] : "Unknown";
     }
 }

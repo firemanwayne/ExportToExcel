@@ -1,11 +1,4 @@
-﻿using NPOI.SS.UserModel;
-using NPOI.XSSF.UserModel;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace Simple.ExportToExcel;
+﻿namespace Simple.ExportToExcel;
 
 /// <summary>
 /// Request object used to encapsulate parameters to generate response
@@ -20,28 +13,31 @@ public class ExcelDocumentRequest<T>
     /// <param name="ItemsToExport">Data to be exported</param>
     /// <param name="HeaderStyle">Header row's style</param>
     /// <param name="BodyStyle">Style of the body rows</param>
-    public ExcelDocumentRequest(string FileName, IEnumerable<T> ItemsToExport, HeaderStyle HeaderStyle = null, BodyStyle BodyStyle = null)
+    public ExcelDocumentRequest(string fileName, IEnumerable<T> itemsToExport, HeaderStyle headerStyle = null, BodyStyle bodyStyle = null)
     {
         Workbook = new XSSFWorkbook();
 
-        this.ItemsToExport = ItemsToExport ?? throw new ArgumentNullException($"{nameof(ItemsToExport)}: you provided nothing to export");
-        this.HeaderStyle = HeaderStyle ?? new HeaderStyle();
-        this.BodyStyle = BodyStyle ?? new BodyStyle();
+        ItemsToExport = itemsToExport ?? throw new ArgumentNullException($"{nameof(itemsToExport)}: you provided nothing to export");
+        HeaderStyle = headerStyle ?? new HeaderStyle();
+        BodyStyle = bodyStyle ?? new BodyStyle();
 
 
-        if (MimeMapping.IsExtensionMissing(FileName))
+        if (MimeMapping.IsExtensionMissing(fileName))
         {
-            this.FileName = FileName += ".xlsx";
+            FileName = fileName += ".xlsx";
         }
         else
         {
-            this.FileName = FileName;
+            FileName = fileName;
         }
 
-        this.HeaderStyle.GenerateStyleObject(Workbook);
-        this.BodyStyle.GenerateStyleObject(Workbook);
+        HeaderStyle.GenerateStyleObject(Workbook);
+        BodyStyle.GenerateStyleObject(Workbook);
     }
 
+    /// <summary>
+    /// The CLR type of the objects being exported. Can be set for runtime type inspection.
+    /// </summary>
     public Type ObjectType { get; set; }
 
     /// <summary>

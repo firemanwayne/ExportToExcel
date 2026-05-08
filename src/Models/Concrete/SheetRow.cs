@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Simple.ExportToExcel;
+﻿namespace Simple.ExportToExcel;
 
 /// <summary>
 /// Represents a row in a spreadsheet
 /// </summary>
 public class SheetRow
 {
-    readonly IList<SheetColumn> columns = new List<SheetColumn>();
+    readonly IList<SheetColumn> _columns = new List<SheetColumn>();
 
     public SheetRow(int index, object value)
     {
@@ -26,14 +23,19 @@ public class SheetRow
 
                     if (columnIndex > -1)
                     {
-                        columns.Add(new SheetColumn(Index, columnIndex, item));
+                        _columns.Add(new SheetColumn(Index, columnIndex, item));
                     }
                 }
             }
         }
     }
 
+    /// <summary>The zero-based index of this row within the spreadsheet.</summary>
     public int Index { get; }
-    public int ColumnCount => columns.Count;
-    public ICollection<SheetColumn> Columns => columns;
+
+    /// <summary>The number of columns in this row.</summary>
+    public int ColumnCount => _columns.Count;
+
+    /// <summary>The collection of columns (cells) that make up this row.</summary>
+    public ICollection<SheetColumn> Columns => _columns;
 }

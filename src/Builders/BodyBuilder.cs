@@ -1,149 +1,166 @@
-﻿using NPOI.SS.UserModel;
-
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Reflection;
-
 namespace Simple.ExportToExcel;
 
+/// <summary>
+/// Builds the data rows of an Excel spreadsheet for a collection of <typeparamref name="T"/> entities.
+/// Uses the column layout established by the paired <see cref="HeaderBuilder{T}"/>.
+/// </summary>
+/// <typeparam name="T">The entity type whose instances form the spreadsheet rows.</typeparam>
 public class BodyBuilder<T>
 {
-    ISheet ExcelSheet;
-    readonly HeaderBuilder<T> Header;
-    ICellStyle BodyCellStyle;
-    ICellStyle HeaderCellStyle;
+    ISheet _excelSheet;
+    readonly HeaderBuilder<T> _header;
+    ICellStyle _bodyCellStyle;
+    ICellStyle _headerCellStyle;
 
-    public BodyBuilder(ExcelDocumentRequest<T> Request, HeaderBuilder<T> Header)
+    /// <summary>
+    /// Initializes a new <see cref="BodyBuilder{T}"/> using settings from an <see cref="ExcelDocumentRequest{T}"/>.
+    /// </summary>
+    /// <param name="request">The document request containing data, workbook, and style configuration.</param>
+    /// <param name="header">The header builder that defines the column layout.</param>
+    public BodyBuilder(ExcelDocumentRequest<T> request, HeaderBuilder<T> header)
     {
-        BodyStyle = Request.BodyStyle;
-        DataItems = Request.ItemsToExport;
-        this.Header = Header;
-        HeaderCellStyle = Request.HeaderStyle.CellStyle ?? Request.HeaderStyle.GenerateStyleObject(Request.Workbook);
-        BodyCellStyle = BodyStyle.GenerateStyleObject(Request.Workbook);
+        BodyStyle = request.BodyStyle;
+        DataItems = request.ItemsToExport;
+        _header = header;
+        _headerCellStyle = request.HeaderStyle.CellStyle ?? request.HeaderStyle.GenerateStyleObject(request.Workbook);
+        _bodyCellStyle = BodyStyle.GenerateStyleObject(request.Workbook);
     }
 
+    /// <summary>
+    /// The style applied to all data cells in the body of the spreadsheet.
+    /// </summary>
     public BodyStyle BodyStyle { get; }
-    public IEnumerable<T> DataItems { get; }
-    public void Build(ISheet ExcelSheet)
-    {
-        this.ExcelSheet = ExcelSheet;
 
-        BodyCellStyle = BodyStyle.CellStyle;
-        int RowCount = 1;
+    /// <summary>
+    /// The collection of entities to write as spreadsheet rows.
+    /// </summary>
+    public IEnumerable<T> DataItems { get; }
+
+    /// <summary>
+    /// Populates the data rows on the given sheet using the entities in <see cref="DataItems"/>.
+    /// </summary>
+    /// <param name="excelSheet">The sheet to write data rows into.</param>
+    public void Build(ISheet excelSheet)
+    {
+        _excelSheet = excelSheet;
+
+        _bodyCellStyle = BodyStyle.CellStyle;
+        int rowCount = 1;
 
         foreach (T item in DataItems)
         {
-            CreateRow(RowCount, item);
-            RowCount++;
+            CreateRow(rowCount, item);
+            rowCount++;
         }
     }
 
-    void CreateRow(int RowCount, T Entity)
+    void CreateRow(int rowCount, T entity)
     {
-        IRow BodyRow = ExcelSheet.CreateRow(RowCount);
+        IRow bodyRow = _excelSheet.CreateRow(rowCount);
 
-        List<PropertyInfo> Properties = Header
+        List<PropertyInfo> properties = _header
             .ColumnProperties
             .Where(e => !e.PropertyType.IsGenericType)
             .ToList();
 
-        int ColumnCount = 0;
+        int columnCount = 0;
 
-        foreach (PropertyInfo item in Properties)
+        foreach (PropertyInfo item in properties)
         {
             string propertyName = item.Name;
 
-            PropertyInfo ParentProperty = Entity
+            PropertyInfo parentProperty = entity
                 .GetType()
                 .GetProperty(propertyName);
 
             if (item.IsList())
             {
-                CreateBodyRowFromGenericList(Entity, item, ExcelSheet, RowCount);
+                CreateBodyRowFromGenericList(entity, item, _excelSheet, rowCount);
             }
             else
             {
-                object propertyValue = ParentProperty.GetValue(Entity, null) ?? "";
+                object propertyValue = parentProperty.GetValue(entity, null) ?? "";
 
-                CreateCell(BodyRow, ColumnCount, propertyValue);
+                CreateCell(bodyRow, columnCount, propertyValue);
 
-                ColumnCount++;
+                columnCount++;
             }
         }
     }
-    void CreateCell(IRow BodyRow, int Column, object Value)
-    {
-        ICell Cell = BodyRow.CreateCell(Column);
-        Cell.CellStyle = BodyCellStyle;
 
-        switch (Value)
+    void CreateCell(IRow bodyRow, int column, object value)
+    {
+        ICell cell = bodyRow.CreateCell(column);
+        cell.CellStyle = _bodyCellStyle;
+
+        switch (value)
         {
             case int v:
-                Cell.SetCellValue(v);
+                cell.SetCellValue(v);
                 break;
 
             case string v:
-                Cell.SetCellValue(v);
+                cell.SetCellValue(v);
                 break;
 
             case double v:
-                Cell.SetCellValue(v);
+                cell.SetCellValue(v);
                 break;
 
             case float v:
-                Cell.SetCellValue(v);
+                cell.SetCellValue(v);
                 break;
 
             default:
-                Cell.SetCellValue($"{Value}");
+                cell.SetCellValue($"{value}");
                 break;
         }
     }
-    void CreateBodyRowFromGenericList(T Parent, PropertyInfo Entity, ISheet ExcelSheet, int RowCount)
+
+    void CreateBodyRowFromGenericList(T parent, PropertyInfo entity, ISheet excelSheet, int rowCount)
     {
-        string propertyName = Entity.Name;
+        string propertyName = entity.Name;
 
         PropertyInfo property = typeof(T).GetProperty(propertyName);
-        object propValue = property.GetValue(Parent, null);
+        object propValue = property.GetValue(parent, null);
 
-        List<PropertyInfo> ListPropertyList = Entity.PropertyType
+        List<PropertyInfo> listPropertyList = entity.PropertyType
             .GetGenericArguments()[0]
             .GetProperties()
             .ToList();
 
-        IRow HeaderColumnRow1 = ExcelSheet.CreateRow(RowCount);
-        RowCount++;
+        IRow headerColumnRow = excelSheet.CreateRow(rowCount);
+        rowCount++;
 
-        for (int h = 0; h < ListPropertyList.Count; h++)
+        for (int h = 0; h < listPropertyList.Count; h++)
         {
-            object[] attributes = ListPropertyList[h]?.GetCustomAttributes(typeof(DisplayAttribute), false);
+            object[] attributes = listPropertyList[h]?.GetCustomAttributes(typeof(DisplayAttribute), false);
             DisplayAttribute displayAttr = attributes?.Length > 0 ? (DisplayAttribute)attributes[0] : null;
-            string DisplayName = displayAttr?.Name ?? ListPropertyList[h].Name;
+            string displayName = displayAttr?.Name ?? listPropertyList[h].Name;
 
-            ICell BodyHeaderCell = HeaderColumnRow1.CreateCell(h);
-            BodyHeaderCell.CellStyle = HeaderCellStyle;
-            BodyHeaderCell.SetCellValue(DisplayName);
+            ICell bodyHeaderCell = headerColumnRow.CreateCell(h);
+            bodyHeaderCell.CellStyle = _headerCellStyle;
+            bodyHeaderCell.SetCellValue(displayName);
         }
 
-        List<object> ListValues = (propValue as IEnumerable<object>)
+        List<object> listValues = (propValue as IEnumerable<object>)
             .Cast<object>()
             .ToList();
 
-        foreach (object value in ListValues)
+        foreach (object value in listValues)
         {
-            IRow BodyRow1 = ExcelSheet.CreateRow(RowCount);
-            RowCount++;
+            IRow bodyRow = excelSheet.CreateRow(rowCount);
+            rowCount++;
             System.Type propertyParentInfo = value.GetType();
 
-            for (int p = 0; p < ListPropertyList.Count; p++)
+            for (int p = 0; p < listPropertyList.Count; p++)
             {
-                string PropertyName = ListPropertyList[p].Name;
-                PropertyInfo listPropertyInfo = propertyParentInfo.GetProperty(PropertyName);
+                string propName = listPropertyList[p].Name;
+                PropertyInfo listPropertyInfo = propertyParentInfo.GetProperty(propName);
                 object objectValue = listPropertyInfo.GetValue(value, null);
-                ICell BodyCell1 = BodyRow1.CreateCell(p);
-                BodyCell1.CellStyle = BodyCellStyle;
-                BodyCell1.SetCellValue(objectValue?.ToString());
+                ICell bodyCell = bodyRow.CreateCell(p);
+                bodyCell.CellStyle = _bodyCellStyle;
+                bodyCell.SetCellValue(objectValue?.ToString());
             }
         }
     }
