@@ -30,3 +30,28 @@ public class AttributeModel
     [SpreadSheetColumn("Column A", 0)]
     public string A { get; set; } = string.Empty;
 }
+
+public class FloatModel
+{
+    public float Ratio { get; set; }
+    public string Label { get; set; } = string.Empty;
+}
+
+public class MixedTypeModel
+{
+    public string Text { get; set; } = string.Empty;
+    public bool Flag { get; set; }
+}
+
+public class ListPropertyModel
+{
+    public string Name { get; set; } = string.Empty;
+    public IList<string> Items { get; set; } = new List<string>();
+    public IEnumerable<int> Numbers { get; set; } = Enumerable.Empty<int>();
+}
+
+public class DateModel
+{
+    public DateTime Date { get; set; }
+    public int Count { get; set; }
+}
