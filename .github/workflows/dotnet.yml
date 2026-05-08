@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -27,23 +29,24 @@ jobs:
     - name: Test
       run: dotnet test --no-build --configuration Release --verbosity normal
 
+    - name: Bump version and push tag
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+      id: tag
+      uses: mathieudutour/github-tag-action@v6.2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        default_bump: patch
+
     - name: Pack
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: dotnet pack src/Simple.ExportToExcel.csproj --no-build --configuration Release --output ./artifacts
-
-    - name: Read package version
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      id: version
-      run: |
-        VERSION=$(grep -oP '(?<=<Version>)[^<]+' src/Simple.ExportToExcel.csproj)
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
+      run: dotnet pack src/Simple.ExportToExcel.csproj --no-build --configuration Release --output ./artifacts -p:Version=${{ steps.tag.outputs.new_version }}
 
     - name: Create GitHub Release
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ steps.version.outputs.version }}
-        name: v${{ steps.version.outputs.version }}
+        tag_name: ${{ steps.tag.outputs.new_tag }}
+        name: ${{ steps.tag.outputs.new_tag }}
         files: ./artifacts/*.nupkg
         generate_release_notes: true
 
