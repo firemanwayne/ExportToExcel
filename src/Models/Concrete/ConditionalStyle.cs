@@ -9,14 +9,12 @@ public class ConditionalStyle
     /// <summary>
     /// Initializes a new <see cref="ConditionalStyle"/> with the evaluation parameters.
     /// </summary>
-    /// <param name="condition">The predicate to evaluate against <paramref name="value"/>.</param>
-    /// <param name="value">The string value passed to <paramref name="condition"/>.</param>
-    /// <param name="trueColor">The color to return when the condition is <c>true</c>.</param>
-    /// <param name="falseColor">The color to return when the condition is <c>false</c>.</param>
-    public ConditionalStyle(Func<string, bool> condition, string value, ExcelColors trueColor, ExcelColors falseColor)
+    /// <param name="condition">The predicate invoked with each cell's string value at render time.</param>
+    /// <param name="trueColor">The color to apply when <paramref name="condition"/> returns <c>true</c>.</param>
+    /// <param name="falseColor">The color associated with a <c>false</c> result (informational; not applied by the pipeline).</param>
+    public ConditionalStyle(Func<string, bool> condition, ExcelColors trueColor, ExcelColors falseColor)
     {
         Condition = condition;
-        Value = value;
         TrueColor = trueColor;
         FalseColor = falseColor;
     }
@@ -24,22 +22,12 @@ public class ConditionalStyle
     /// <summary>The color applied when <see cref="Condition"/> returns <c>true</c>.</summary>
     public ExcelColors TrueColor { get; }
 
-    /// <summary>The color applied when <see cref="Condition"/> returns <c>false</c>.</summary>
+    /// <summary>The color associated with a <c>false</c> result.</summary>
     public ExcelColors FalseColor { get; }
 
-    /// <summary>The string value evaluated by <see cref="Condition"/>.</summary>
-    public string Value { get; }
-
-    /// <summary>The predicate that determines which color is returned by <see cref="Evaluate"/>.</summary>
-    public Func<string, bool> Condition { get; }
-
     /// <summary>
-    /// Invokes <see cref="Condition"/> with <see cref="Value"/> and returns
-    /// <see cref="TrueColor"/> or <see cref="FalseColor"/> accordingly.
+    /// The predicate invoked by the pipeline with each cell's string value.
+    /// When it returns <c>true</c>, <see cref="TrueColor"/> is applied to the cell.
     /// </summary>
-    /// <returns>The <see cref="ExcelColors"/> result of the condition evaluation.</returns>
-    public ExcelColors Evaluate()
-    {
-        return Condition.Invoke(Value) ? TrueColor : FalseColor;
-    }
+    public Func<string, bool> Condition { get; }
 }

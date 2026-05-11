@@ -8,7 +8,7 @@ public class ExcelDocumentResponse
     /// <summary>
     /// Creates a response object after a spreadsheet has been generated
     /// </summary>
-    /// <param name="FileName">Filename of the spreadsheet</param>
+    /// <param name="fileName">Filename of the spreadsheet</param>
     public ExcelDocumentResponse(string fileName)
     {
         FileName = fileName;
@@ -30,11 +30,6 @@ public class ExcelDocumentResponse
     /// Filename for the spreadsheet
     /// </summary>
     public string FileName { get; }
-
-    /// <summary>
-    /// Uri where the spreadsheet is stored
-    /// </summary>
-    public Uri FileUri { get; }
 
     /// <summary>
     /// Content type of the spreadsheet

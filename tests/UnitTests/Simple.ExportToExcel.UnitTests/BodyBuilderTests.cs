@@ -267,12 +267,10 @@ public class BodyBuilderTests
     // --- CreateBodyRowFromGenericList dead-code coverage note ---
 
     [TestMethod]
-    public void Build_IsList_AlwaysReturnsFalse_GenericListBranchNeverExecuted()
+    public void Build_GenericListProperty_ProducesNoAdditionalRows()
     {
-        // ReflectionExtensions.IsList has a logic bug: the final comparison
-        // (IList<> == IEnumerable<>) is always false, so CreateBodyRowFromGenericList
-        // is never called regardless of the property type.
-        // This test documents that generic-list properties produce no body rows.
+        // HeaderBuilder skips IList<T> properties (does not add them to ColumnProperties),
+        // so BodyBuilder never writes cells or sub-rows for them.
         var data = new[] { new ListPropertyModel
         {
             Name = "parent",

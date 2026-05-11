@@ -1,3 +1,6 @@
+using Simple.ExportToExcel.Models.Concrete;
+using Simple.ExportToExcel.Styles;
+
 namespace Simple.ExportToExcel;
 
 /// <summary>
@@ -9,8 +12,14 @@ public class BodyBuilder<T>
 {
     ISheet _excelSheet;
     readonly HeaderBuilder<T> _header;
-    ICellStyle _bodyCellStyle;
-    ICellStyle _headerCellStyle;
+    readonly ICellStyle _bodyCellStyle;
+    readonly ICellStyle _headerCellStyle;
+    readonly IWorkbook _workbook;
+    readonly Func<T, bool> _rowStylePredicate;
+    readonly ICellStyle _trueRowCellStyle;
+    readonly ICellStyle _falseRowCellStyle;
+    readonly IList<ConditionalStyle> _conditionalStyles;
+    readonly Dictionary<(short colorId, short baseIndex), ICellStyle> _conditionalStyleCache = new();
 
     /// <summary>
     /// Initializes a new <see cref="BodyBuilder{T}"/> using settings from an <see cref="ExcelDocumentRequest{T}"/>.
@@ -22,8 +31,17 @@ public class BodyBuilder<T>
         BodyStyle = request.BodyStyle;
         DataItems = request.ItemsToExport;
         _header = header;
+        _workbook = request.Workbook;
         _headerCellStyle = request.HeaderStyle.CellStyle ?? request.HeaderStyle.GenerateStyleObject(request.Workbook);
         _bodyCellStyle = BodyStyle.GenerateStyleObject(request.Workbook);
+        _conditionalStyles = request.ConditionalStyles;
+
+        if (request.RowStyleExpression?.EvaluatedExpression != null)
+        {
+            _rowStylePredicate = request.RowStyleExpression.EvaluatedExpression.Compile();
+            _trueRowCellStyle  = request.RowStyleExpression.TrueStyleResult?.GenerateStyleObject(_workbook);
+            _falseRowCellStyle = request.RowStyleExpression.FalseStyleResult?.GenerateStyleObject(_workbook);
+        }
     }
 
     /// <summary>
@@ -44,7 +62,6 @@ public class BodyBuilder<T>
     {
         _excelSheet = excelSheet;
 
-        _bodyCellStyle = BodyStyle.CellStyle;
         int rowCount = 1;
 
         foreach (T item in DataItems)
@@ -58,6 +75,14 @@ public class BodyBuilder<T>
     {
         IRow bodyRow = _excelSheet.CreateRow(rowCount);
 
+        ICellStyle rowCellStyle = _bodyCellStyle;
+        if (_rowStylePredicate != null)
+        {
+            ICellStyle matched = _rowStylePredicate(entity) ? _trueRowCellStyle : _falseRowCellStyle;
+            if (matched != null)
+                rowCellStyle = matched;
+        }
+
         List<PropertyInfo> properties = _header
             .ColumnProperties
             .Where(e => !e.PropertyType.IsGenericType)
@@ -67,31 +92,17 @@ public class BodyBuilder<T>
 
         foreach (PropertyInfo item in properties)
         {
-            string propertyName = item.Name;
-
-            PropertyInfo parentProperty = entity
-                .GetType()
-                .GetProperty(propertyName);
-
-            if (item.IsList())
-            {
-                CreateBodyRowFromGenericList(entity, item, _excelSheet, rowCount);
-            }
-            else
-            {
-                object propertyValue = parentProperty.GetValue(entity, null) ?? "";
-
-                CreateCell(bodyRow, columnCount, propertyValue);
-
-                columnCount++;
-            }
+            PropertyInfo parentProperty = entity.GetType().GetProperty(item.Name);
+            object propertyValue = parentProperty.GetValue(entity, null) ?? "";
+            CreateCell(bodyRow, columnCount, propertyValue, rowCellStyle);
+            columnCount++;
         }
     }
 
-    void CreateCell(IRow bodyRow, int column, object value)
+    void CreateCell(IRow bodyRow, int column, object value, ICellStyle cellStyle)
     {
         ICell cell = bodyRow.CreateCell(column);
-        cell.CellStyle = _bodyCellStyle;
+        cell.CellStyle = ResolveConditionalStyle(value, cellStyle);
 
         switch (value)
         {
@@ -115,6 +126,41 @@ public class BodyBuilder<T>
                 cell.SetCellValue($"{value}");
                 break;
         }
+    }
+
+    /// <summary>
+    /// Evaluates the <see cref="ConditionalStyle"/> list against the string representation of
+    /// <paramref name="value"/>. The first condition whose predicate returns <c>true</c> wins;
+    /// its <see cref="ConditionalStyle.TrueColor"/> is applied. The resulting style is cached
+    /// per (color, base style) pair. Returns <paramref name="fallback"/> when no condition matches.
+    /// </summary>
+    ICellStyle ResolveConditionalStyle(object value, ICellStyle fallback)
+    {
+        if (_conditionalStyles is not { Count: > 0 })
+            return fallback;
+
+        string stringValue = value?.ToString() ?? string.Empty;
+
+        foreach (ConditionalStyle condition in _conditionalStyles)
+        {
+            if (!condition.Condition.Invoke(stringValue))
+                continue;
+
+            var cacheKey = (condition.TrueColor.Id, fallback.Index);
+            if (!_conditionalStyleCache.TryGetValue(cacheKey, out ICellStyle cached))
+            {
+                XSSFCellStyle newStyle = (XSSFCellStyle)_workbook.CreateCellStyle();
+                newStyle.CloneStyleFrom(fallback);
+                newStyle.SetFillForegroundColor(new XSSFColor(condition.TrueColor.IndexedColor.RGB, null));
+                newStyle.FillPattern = FillPattern.SolidForeground;
+                _conditionalStyleCache[cacheKey] = newStyle;
+                cached = newStyle;
+            }
+
+            return cached;
+        }
+
+        return fallback;
     }
 
     void CreateBodyRowFromGenericList(T parent, PropertyInfo entity, ISheet excelSheet, int rowCount)

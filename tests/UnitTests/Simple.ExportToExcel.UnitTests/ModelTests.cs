@@ -244,45 +244,43 @@ public class ConditionalStyleTests
     static readonly ExcelColors Blue = ExcelColors.ColorCollection.Values.First(c => c.Name == "Blue");
 
     [TestMethod]
-    public void Evaluate_ConditionTrue_ReturnsTrueColor()
-    {
-        var style = new ConditionalStyle(_ => true, "any", Red, Blue);
-
-        var result = style.Evaluate();
-
-        Assert.AreSame(Red, result);
-    }
-
-    [TestMethod]
-    public void Evaluate_ConditionFalse_ReturnsFalseColor()
-    {
-        var style = new ConditionalStyle(_ => false, "any", Red, Blue);
-
-        var result = style.Evaluate();
-
-        Assert.AreSame(Blue, result);
-    }
-
-    [TestMethod]
-    public void Evaluate_PassesValueToCondition()
-    {
-        string captured = null;
-        var style = new ConditionalStyle(v => { captured = v; return true; }, "test-value", Red, Blue);
-
-        style.Evaluate();
-
-        Assert.AreEqual("test-value", captured);
-    }
-
-    [TestMethod]
-    public void Constructor_SetsAllProperties()
+    public void Constructor_SetsCondition()
     {
         Func<string, bool> condition = _ => true;
-        var style = new ConditionalStyle(condition, "val", Red, Blue);
+        var style = new ConditionalStyle(condition, Red, Blue);
 
         Assert.AreSame(condition, style.Condition);
-        Assert.AreEqual("val", style.Value);
+    }
+
+    [TestMethod]
+    public void Constructor_SetsTrueColor()
+    {
+        var style = new ConditionalStyle(_ => true, Red, Blue);
+
         Assert.AreSame(Red, style.TrueColor);
+    }
+
+    [TestMethod]
+    public void Constructor_SetsFalseColor()
+    {
+        var style = new ConditionalStyle(_ => true, Red, Blue);
+
         Assert.AreSame(Blue, style.FalseColor);
+    }
+
+    [TestMethod]
+    public void Condition_Invoke_MatchingValue_ReturnsTrue()
+    {
+        var style = new ConditionalStyle(v => v == "Active", Red, Blue);
+
+        Assert.IsTrue(style.Condition.Invoke("Active"));
+    }
+
+    [TestMethod]
+    public void Condition_Invoke_NonMatchingValue_ReturnsFalse()
+    {
+        var style = new ConditionalStyle(v => v == "Active", Red, Blue);
+
+        Assert.IsFalse(style.Condition.Invoke("Inactive"));
     }
 }

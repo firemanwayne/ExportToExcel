@@ -7,6 +7,11 @@ public class SheetRow
 {
     readonly IList<SheetColumn> _columns = new List<SheetColumn>();
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="value"></param>
     public SheetRow(int index, object value)
     {
         Index = index;
@@ -19,7 +24,7 @@ public class SheetRow
             {
                 foreach (string item in stringValues)
                 {
-                    int columnIndex = Array.BinarySearch(stringValues, item);
+                    int columnIndex = Array.IndexOf(stringValues, item);
 
                     if (columnIndex > -1)
                     {

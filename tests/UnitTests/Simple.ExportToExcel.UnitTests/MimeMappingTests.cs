@@ -55,19 +55,37 @@ public class MimeMappingTests
     }
 
     [TestMethod]
-    public void GetAllMimeTypes_ThrowsInvalidOperationException()
+    public void GetAllMimeTypes_ReturnsNonEmptyDictionary()
     {
-        // Extension struct does not implement IComparable, so OrderBy(m => m.Value)
-        // in GetAllMimeTypes throws at runtime.
-        Assert.ThrowsExactly<InvalidOperationException>(() => MimeMapping.GetAllMimeTypes());
+        var result = MimeMapping.GetAllMimeTypes();
+
+        Assert.IsTrue(result.Count > 0);
     }
 
     [TestMethod]
-    public void GetMimeMappingsByType_KnownType_ReturnsNonEmptyList()
+    public void GetAllMimeTypes_KeysMatchExtensions()
+    {
+        var result = MimeMapping.GetAllMimeTypes();
+
+        Assert.IsTrue(result.ContainsKey(".gif"));
+    }
+
+    [TestMethod]
+    public void GetMimeFromFileName_MultiSegmentName_UsesLastExtension()
+    {
+        // e.g. "my.report.xlsx" should resolve .xlsx, not .report
+        var mime = MimeMapping.GetMimeFromFileName("my.report.xlsx");
+
+        Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", mime);
+    }
+
+    [TestMethod]
+    public void GetMimeMappingsByType_KnownType_ReturnsOnlyMatchingExtensions()
     {
         var results = MimeMapping.GetMimeMappingsByType("image/gif");
 
         Assert.IsTrue(results.Count > 0);
+        Assert.IsTrue(results.All(ext => MimeMapping.Extensions[ext].Value == "image/gif"));
     }
 
     [TestMethod]
@@ -82,6 +100,20 @@ public class MimeMappingTests
     public void Extensions_ContainsXlsEntry()
     {
         Assert.IsTrue(MimeMapping.Extensions.ContainsKey(".xls"));
+    }
+
+    [TestMethod]
+    public void Extensions_ContainsXlsxEntry()
+    {
+        Assert.IsTrue(MimeMapping.Extensions.ContainsKey(".xlsx"));
+    }
+
+    [TestMethod]
+    public void GetMimeMappingByExtension_XlsxExtension_ReturnsCorrectMime()
+    {
+        var mime = MimeMapping.GetMimeMappingByExtension(".xlsx");
+
+        Assert.AreEqual("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", mime);
     }
 
     [TestMethod]

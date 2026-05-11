@@ -15,24 +15,23 @@ internal class ExcelService<T> : IExportToExcel<T>
     public ExcelService() { }
 
     /// <inheritdoc/>
-    public Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> Request)
+    public async Task<ExcelDocumentResponse> ExportToExcel(ExcelDocumentRequest<T> Request)
     {
         try
         {
             BuildSpreadsheet(Request);
 
             using MemoryStream ms = new();
-            Request.Workbook.Write(ms);
+            await Task.Run(() => Request.Workbook.Write(ms));
 
-            return Task.FromResult(
-                new ExcelDocumentResponse(Request.FileName)
-                {
-                    SpreadSheetBytes = ms.ToArray(),
-                });
+            return new ExcelDocumentResponse(Request.FileName)
+            {
+                SpreadSheetBytes = ms.ToArray(),
+            };
         }
         catch (Exception ex)
         {
-            return Task.FromResult(new ExcelDocumentResponse(ex));
+            return new ExcelDocumentResponse(ex);
         }
     }
 

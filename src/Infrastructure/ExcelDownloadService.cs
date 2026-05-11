@@ -35,6 +35,10 @@ internal class ExcelDownloadService : IExcelDownloadService
         {
             await module.InvokeVoidAsync(ExportLocalFunctionName, l.FileName, l.FileContent, l.ContentType);
         }
+        else
+        {
+            throw new ArgumentException($"Unsupported {nameof(UploadResponse)} type: {Response?.GetType().Name}", nameof(Response));
+        }
     }
 
     public async ValueTask DisposeAsync()

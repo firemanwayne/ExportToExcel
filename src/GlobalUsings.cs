@@ -8,3 +8,4 @@ global using NPOI.SS.UserModel;
 global using NPOI.XSSF.UserModel;
 global using Simple.ExportToExcel;
 global using Simple.ExportToExcel.Styles;
+global using Simple.ExportToExcel.Models.Concrete;

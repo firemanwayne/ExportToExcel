@@ -26,6 +26,6 @@ public static class ReflectionExtensions
             return false;
         }
 
-        return p.PropertyType.GetGenericTypeDefinition() == typeof(IEnumerable<>);
+        return true;
     }
 }

@@ -9,10 +9,10 @@ public class ExcelDocumentRequest<T>
     /// <summary>
     /// Creates a request object that's used to export data into a spreadsheet
     /// </summary>
-    /// <param name="FileName">Filename of the spreadsheet</param>
-    /// <param name="ItemsToExport">Data to be exported</param>
-    /// <param name="HeaderStyle">Header row's style</param>
-    /// <param name="BodyStyle">Style of the body rows</param>
+    /// <param name="fileName">Filename of the spreadsheet</param>
+    /// <param name="itemsToExport">Data to be exported</param>
+    /// <param name="headerStyle">Header row's style</param>
+    /// <param name="bodyStyle">Style of the body rows</param>
     public ExcelDocumentRequest(string fileName, IEnumerable<T> itemsToExport, HeaderStyle headerStyle = null, BodyStyle bodyStyle = null)
     {
         Workbook = new XSSFWorkbook();
@@ -31,34 +31,40 @@ public class ExcelDocumentRequest<T>
             FileName = fileName;
         }
 
-        HeaderStyle.GenerateStyleObject(Workbook);
-        BodyStyle.GenerateStyleObject(Workbook);
     }
-
-    /// <summary>
-    /// The CLR type of the objects being exported. Can be set for runtime type inspection.
-    /// </summary>
-    public Type ObjectType { get; set; }
 
     /// <summary>
     /// Filename of the spreadsheet
     /// </summary>
-    public string FileName { get; set; }
+    public string FileName { get; }
 
     /// <summary>
     /// Data that will be in the spreadsheet
     /// </summary>
-    public IEnumerable<T> ItemsToExport { get; set; } = Enumerable.Empty<T>();
+    public IEnumerable<T> ItemsToExport { get; set; }
 
     /// <summary>
     /// Style for the header of the spreadsheet
     /// </summary>
-    public HeaderStyle HeaderStyle { get; } = new HeaderStyle();
+    public HeaderStyle HeaderStyle { get; }
 
     /// <summary>
     /// Style for the body of the spreadsheet
     /// </summary>
-    public BodyStyle BodyStyle { get; } = new BodyStyle();
+    public BodyStyle BodyStyle { get; }
+
+    /// <summary>
+    /// Optional conditional row style expression. When set, each data row is evaluated
+    /// and styled with <see cref="RowStyleExpression{T}.TrueStyleResult"/> or
+    /// <see cref="RowStyleExpression{T}.FalseStyleResult"/> accordingly.
+    /// </summary>
+    public RowStyleExpression<T> RowStyleExpression { get; set; }
+
+    /// <summary>
+    /// Optional list of cell-level conditional styles. For each cell the first condition
+    /// whose predicate matches the cell's string value is applied.
+    /// </summary>
+    public IList<ConditionalStyle> ConditionalStyles { get; set; } = [];
 
     /// <summary>
     /// Instance of the Workbook

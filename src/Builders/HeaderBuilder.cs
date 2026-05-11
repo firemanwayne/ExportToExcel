@@ -64,11 +64,6 @@ public class HeaderBuilder<T>
     /// <returns>The <see cref="ISheet"/> with the header row populated.</returns>
     public ISheet Build(string fileName)
     {
-        if (_workBook == null)
-        {
-            throw new NullReferenceException(nameof(_workBook));
-        }
-
         _excelSheet = _workBook.CreateSheet(fileName);
         _headerRow = _excelSheet.CreateRow(0);
 
@@ -120,21 +115,17 @@ public class HeaderBuilder<T>
 
         foreach (PropertyInfo item in properties)
         {
+            if (item.IsList())
+                continue;
+
             _columnProperties.Add(item);
 
-            if (item.IsList())
+            MemberInfo[] memberInfoArray = EntityType.GetMember(item.Name);
+            if (memberInfoArray != null && memberInfoArray[0] != null)
             {
-
-            }
-            else
-            {
-                MemberInfo[] memberInfoArray = EntityType.GetMember(item.Name);
-                if (memberInfoArray != null && memberInfoArray[0] != null)
-                {
-                    DisplayAttribute attribute = memberInfoArray[0].GetCustomAttribute<DisplayAttribute>();
-                    AddCell(columnIndex, attribute?.Name ?? item.Name);
-                    columnIndex++;
-                }
+                DisplayAttribute attribute = memberInfoArray[0].GetCustomAttribute<DisplayAttribute>();
+                AddCell(columnIndex, attribute?.Name ?? item.Name);
+                columnIndex++;
             }
         }
     }

@@ -205,7 +205,17 @@ internal class MimeMapping
         {".xsd", new Extension(".xsd", "text/xml")},
         {".z", new Extension(".z", "application/x-compress")},
         {".zip", new Extension(".zip", "application/x-zip-compressed")},
-        {".*", new Extension(".*", "application/octet-stream")}
+        {".*", new Extension(".*", "application/octet-stream")},
+        {".xlsx", new Extension(".xlsx", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
+        {".docx", new Extension(".docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document")},
+        {".pptx", new Extension(".pptx", "application/vnd.openxmlformats-officedocument.presentationml.presentation")},
+        {".csv", new Extension(".csv", "text/csv")},
+        {".json", new Extension(".json", "application/json")},
+        {".png", new Extension(".png", "image/png")},
+        {".svg", new Extension(".svg", "image/svg+xml")},
+        {".webp", new Extension(".webp", "image/webp")},
+        {".mp4", new Extension(".mp4", "video/mp4")},
+        {".webm", new Extension(".webm", "video/webm")},
     };
 
     /// <summary>
@@ -254,9 +264,10 @@ internal class MimeMapping
             string[] ValueArray = fileName.Split('.');
             if (ValueArray.Length > 1)
             {
-                if (Extensions.ContainsKey($".{ValueArray[1]}"))
+                string ext = $".{ValueArray[^1]}";
+                if (Extensions.ContainsKey(ext))
                 {
-                    return Extensions[$".{ValueArray[1]}"].Value;
+                    return Extensions[ext].Value;
                 }
                 else
                 {
@@ -300,7 +311,7 @@ internal class MimeMapping
         List<string> Mimes = new();
         foreach (KeyValuePair<string, Extension> item in Extensions)
         {
-            if (Extensions.Values.Select(m => m.Value).Contains(mimeTypeName))
+            if (item.Value.Value == mimeTypeName)
             {
                 Mimes.Add(item.Key);
             }

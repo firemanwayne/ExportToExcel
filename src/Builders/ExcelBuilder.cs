@@ -4,10 +4,8 @@
 /// Orchestrates the assembly of an Excel spreadsheet by coordinating
 /// <see cref="HeaderBuilder{T}"/> and <see cref="BodyBuilder{T}"/>.
 /// </summary>
-public class ExcelBuilder
+public static class ExcelBuilder
 {
-    private ExcelBuilder()
-    { }
 
     /// <summary>
     /// Builds the Excel spreadsheet by first creating the header row then populating the data rows.

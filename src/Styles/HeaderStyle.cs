@@ -6,5 +6,8 @@
 /// </summary>
 public class HeaderStyle : ExcelStyle
 {
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public HeaderStyle() : base() { }
 }

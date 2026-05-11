@@ -6,5 +6,8 @@
 /// </summary>
 public class BodyStyle : ExcelStyle
 {
+    /// <summary>
+    /// Constructor
+    /// </summary>
     public BodyStyle() : base() { }
 }

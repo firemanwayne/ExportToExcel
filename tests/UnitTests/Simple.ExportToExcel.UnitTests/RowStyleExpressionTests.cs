@@ -20,7 +20,7 @@ public class RowStyleExpressionTests
     [TestMethod]
     public void TrueStyleResult_CanBeSetAndRead()
     {
-        var expr = new RowStyleExpression<PlainModel>();
+        var expr  = new RowStyleExpression<PlainModel>();
         var style = new RowStyle();
 
         expr.TrueStyleResult = style;
@@ -31,7 +31,7 @@ public class RowStyleExpressionTests
     [TestMethod]
     public void FalseStyleResult_CanBeSetAndRead()
     {
-        var expr = new RowStyleExpression<PlainModel>();
+        var expr  = new RowStyleExpression<PlainModel>();
         var style = new RowStyle();
 
         expr.FalseStyleResult = style;
@@ -46,10 +46,9 @@ public class RowStyleExpressionTests
     [TestMethod]
     public void FilterByProperty_IntProperty_SetsEvaluatedExpression()
     {
-        var expr   = new RowStyleExpression<PlainModel>();
-        var entity = new PlainModel { Value = 10 };
+        var expr = new RowStyleExpression<PlainModel>();
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 10, OperationOperatorEnum.Equals);
+        expr.FilterByProperty(nameof(PlainModel.Value), 10, OperationOperatorEnum.Equals);
 
         Assert.IsNotNull(expr.EvaluatedExpression);
     }
@@ -57,23 +56,29 @@ public class RowStyleExpressionTests
     [TestMethod]
     public void FilterByProperty_DateTimeProperty_SetsEvaluatedExpression()
     {
-        var expr   = new RowStyleExpression<DateModel>();
-        var now    = DateTime.UtcNow;
-        var entity = new DateModel { Date = now };
+        var expr = new RowStyleExpression<DateModel>();
 
-        expr.FilterByProperty(entity, nameof(DateModel.Date), now, OperationOperatorEnum.Equals);
+        expr.FilterByProperty(nameof(DateModel.Date), DateTime.UtcNow, OperationOperatorEnum.Equals);
 
         Assert.IsNotNull(expr.EvaluatedExpression);
     }
 
     [TestMethod]
-    public void FilterByProperty_StringProperty_LeavesExpressionNull()
+    public void FilterByProperty_StringProperty_EqualsOperator_SetsEvaluatedExpression()
     {
-        // FilterByProperty only handles int and DateTime; string is ignored.
-        var expr   = new RowStyleExpression<PlainModel>();
-        var entity = new PlainModel { Name = "hello" };
+        var expr = new RowStyleExpression<PlainModel>();
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Name), "hello", OperationOperatorEnum.Equals);
+        expr.FilterByProperty(nameof(PlainModel.Name), "hello", OperationOperatorEnum.Equals);
+
+        Assert.IsNotNull(expr.EvaluatedExpression);
+    }
+
+    [TestMethod]
+    public void FilterByProperty_StringProperty_UnsupportedOperator_LeavesExpressionNull()
+    {
+        var expr = new RowStyleExpression<PlainModel>();
+
+        expr.FilterByProperty(nameof(PlainModel.Name), "hello", OperationOperatorEnum.GreaterThan);
 
         Assert.IsNull(expr.EvaluatedExpression);
     }
@@ -81,11 +86,9 @@ public class RowStyleExpressionTests
     [TestMethod]
     public void FilterByProperty_MismatchedTypes_LeavesExpressionNull()
     {
-        // int property compared against a DateTime — no branch matches.
-        var expr   = new RowStyleExpression<PlainModel>();
-        var entity = new PlainModel { Value = 5 };
+        var expr = new RowStyleExpression<PlainModel>();
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), DateTime.UtcNow, OperationOperatorEnum.Equals);
+        expr.FilterByProperty(nameof(PlainModel.Value), DateTime.UtcNow, OperationOperatorEnum.Equals);
 
         Assert.IsNull(expr.EvaluatedExpression);
     }
@@ -93,140 +96,206 @@ public class RowStyleExpressionTests
     [TestMethod]
     public void FilterByProperty_CalledTwice_OverwritesExpression()
     {
-        var expr   = new RowStyleExpression<PlainModel>();
-        var entity = new PlainModel { Value = 1 };
+        var expr = new RowStyleExpression<PlainModel>();
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 1, OperationOperatorEnum.GreaterThan);
+        expr.FilterByProperty(nameof(PlainModel.Value), 1, OperationOperatorEnum.GreaterThan);
         var first = expr.EvaluatedExpression;
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 2, OperationOperatorEnum.GreaterThan);
+        expr.FilterByProperty(nameof(PlainModel.Value), 2, OperationOperatorEnum.GreaterThan);
 
         Assert.AreNotSame(first, expr.EvaluatedExpression);
     }
 
     // -----------------------------------------------------------------------
-    // EvaluateIntegers — actual (buggy) behaviour
-    //
-    // All three if-branches check OperationOperatorEnum.GreaterThan, so:
-    //   • Equals    → no branch matches → false
-    //   • GreaterThan → first branch hits → returns value1 == value2
-    //   • LessThan  → no branch matches → false
+    // EvaluateIntegers
     // -----------------------------------------------------------------------
 
     [TestMethod]
-    public void EvaluateIntegers_EqualsOperator_ReturnsFalse()
+    public void EvaluateIntegers_EqualsOperator_EqualValues_ReturnsTrue()
     {
-        // Bug: Equals operator falls through all GreaterThan checks → false.
         var expr   = new RowStyleExpression<PlainModel>();
         var entity = new PlainModel { Value = 5 };
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 5, OperationOperatorEnum.Equals);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(PlainModel.Value), 5, OperationOperatorEnum.Equals);
 
-        Assert.IsFalse(result);
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
     }
 
     [TestMethod]
-    public void EvaluateIntegers_GreaterThan_EqualValues_ReturnsTrue()
+    public void EvaluateIntegers_EqualsOperator_UnequalValues_ReturnsFalse()
     {
-        // Bug: GreaterThan branch returns value1 == value2, so equal values → true.
         var expr   = new RowStyleExpression<PlainModel>();
-        var entity = new PlainModel { Value = 7 };
+        var entity = new PlainModel { Value = 5 };
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 7, OperationOperatorEnum.GreaterThan);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(PlainModel.Value), 99, OperationOperatorEnum.Equals);
 
-        Assert.IsTrue(result);
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
     }
 
     [TestMethod]
-    public void EvaluateIntegers_GreaterThan_UnequalValues_ReturnsFalse()
+    public void EvaluateIntegers_GreaterThan_EntityValueGreater_ReturnsTrue()
     {
-        // Bug: GreaterThan branch returns value1 == value2, so unequal values → false.
         var expr   = new RowStyleExpression<PlainModel>();
         var entity = new PlainModel { Value = 10 };
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 3, OperationOperatorEnum.GreaterThan);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(PlainModel.Value), 3, OperationOperatorEnum.GreaterThan);
 
-        Assert.IsFalse(result);
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
     }
 
     [TestMethod]
-    public void EvaluateIntegers_LessThanOperator_ReturnsFalse()
+    public void EvaluateIntegers_GreaterThan_EqualValues_ReturnsFalse()
     {
-        // Bug: LessThan falls through all GreaterThan checks → false.
+        var expr   = new RowStyleExpression<PlainModel>();
+        var entity = new PlainModel { Value = 7 };
+
+        expr.FilterByProperty(nameof(PlainModel.Value), 7, OperationOperatorEnum.GreaterThan);
+
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    [TestMethod]
+    public void EvaluateIntegers_LessThan_EntityValueLess_ReturnsTrue()
+    {
         var expr   = new RowStyleExpression<PlainModel>();
         var entity = new PlainModel { Value = 2 };
 
-        expr.FilterByProperty(entity, nameof(PlainModel.Value), 10, OperationOperatorEnum.LessThan);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(PlainModel.Value), 10, OperationOperatorEnum.LessThan);
 
-        Assert.IsFalse(result);
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    [TestMethod]
+    public void EvaluateIntegers_LessThan_EntityValueGreater_ReturnsFalse()
+    {
+        var expr   = new RowStyleExpression<PlainModel>();
+        var entity = new PlainModel { Value = 10 };
+
+        expr.FilterByProperty(nameof(PlainModel.Value), 2, OperationOperatorEnum.LessThan);
+
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
     }
 
     // -----------------------------------------------------------------------
-    // EvaluateDates — same bug, same actual behaviour
+    // EvaluateDates
     // -----------------------------------------------------------------------
 
     [TestMethod]
-    public void EvaluateDates_EqualsOperator_ReturnsFalse()
+    public void EvaluateDates_EqualsOperator_SameDates_ReturnsTrue()
     {
         var expr   = new RowStyleExpression<DateModel>();
-        var now    = new DateTime(2024, 1, 1);
-        var entity = new DateModel { Date = now };
+        var date   = new DateTime(2024, 1, 1);
+        var entity = new DateModel { Date = date };
 
-        expr.FilterByProperty(entity, nameof(DateModel.Date), now, OperationOperatorEnum.Equals);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(DateModel.Date), date, OperationOperatorEnum.Equals);
 
-        Assert.IsFalse(result);
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
     }
 
     [TestMethod]
-    public void EvaluateDates_GreaterThan_SameDates_ReturnsTrue()
+    public void EvaluateDates_EqualsOperator_DifferentDates_ReturnsFalse()
     {
-        // Bug: GreaterThan branch returns date1 == date2, so same dates → true.
+        var expr   = new RowStyleExpression<DateModel>();
+        var entity = new DateModel { Date = new DateTime(2024, 1, 1) };
+
+        expr.FilterByProperty(nameof(DateModel.Date), new DateTime(2025, 1, 1), OperationOperatorEnum.Equals);
+
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    [TestMethod]
+    public void EvaluateDates_GreaterThan_EntityDateGreater_ReturnsTrue()
+    {
+        var expr   = new RowStyleExpression<DateModel>();
+        var entity = new DateModel { Date = new DateTime(2024, 12, 31) };
+
+        expr.FilterByProperty(nameof(DateModel.Date), new DateTime(2024, 1, 1), OperationOperatorEnum.GreaterThan);
+
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    [TestMethod]
+    public void EvaluateDates_GreaterThan_SameDates_ReturnsFalse()
+    {
         var expr   = new RowStyleExpression<DateModel>();
         var date   = new DateTime(2024, 6, 15);
         var entity = new DateModel { Date = date };
 
-        expr.FilterByProperty(entity, nameof(DateModel.Date), date, OperationOperatorEnum.GreaterThan);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(DateModel.Date), date, OperationOperatorEnum.GreaterThan);
 
-        Assert.IsTrue(result);
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
     }
 
     [TestMethod]
-    public void EvaluateDates_GreaterThan_DifferentDates_ReturnsFalse()
-    {
-        // Bug: GreaterThan branch returns date1 == date2, so different dates → false.
-        var expr   = new RowStyleExpression<DateModel>();
-        var entity = new DateModel { Date = new DateTime(2024, 12, 31) };
-
-        expr.FilterByProperty(entity, nameof(DateModel.Date), new DateTime(2024, 1, 1), OperationOperatorEnum.GreaterThan);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
-
-        Assert.IsFalse(result);
-    }
-
-    [TestMethod]
-    public void EvaluateDates_LessThanOperator_ReturnsFalse()
+    public void EvaluateDates_LessThan_EntityDateLess_ReturnsTrue()
     {
         var expr   = new RowStyleExpression<DateModel>();
         var entity = new DateModel { Date = new DateTime(2020, 1, 1) };
 
-        expr.FilterByProperty(entity, nameof(DateModel.Date), new DateTime(2025, 1, 1), OperationOperatorEnum.LessThan);
-        bool result = expr.EvaluatedExpression.Compile()(entity);
+        expr.FilterByProperty(nameof(DateModel.Date), new DateTime(2025, 1, 1), OperationOperatorEnum.LessThan);
 
-        Assert.IsFalse(result);
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    [TestMethod]
+    public void EvaluateDates_LessThan_EntityDateGreater_ReturnsFalse()
+    {
+        var expr   = new RowStyleExpression<DateModel>();
+        var entity = new DateModel { Date = new DateTime(2025, 6, 1) };
+
+        expr.FilterByProperty(nameof(DateModel.Date), new DateTime(2020, 1, 1), OperationOperatorEnum.LessThan);
+
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
     }
 
     // -----------------------------------------------------------------------
-    // Expression is usable with LINQ
+    // String evaluation
     // -----------------------------------------------------------------------
 
     [TestMethod]
-    public void EvaluatedExpression_CanBeUsedWithLinqWhere()
+    public void EvaluateString_EqualsOperator_MatchingValue_ReturnsTrue()
+    {
+        var expr   = new RowStyleExpression<PlainModel>();
+        var entity = new PlainModel { Name = "Active" };
+
+        expr.FilterByProperty(nameof(PlainModel.Name), "Active", OperationOperatorEnum.Equals);
+
+        Assert.IsTrue(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    [TestMethod]
+    public void EvaluateString_EqualsOperator_NonMatchingValue_ReturnsFalse()
+    {
+        var expr      = new RowStyleExpression<PlainModel>();
+        var entity    = new PlainModel { Name = "Inactive" };
+
+        expr.FilterByProperty(nameof(PlainModel.Name), "Active", OperationOperatorEnum.Equals);
+
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(entity));
+    }
+
+    // -----------------------------------------------------------------------
+    // Expression reads from the queried entity, not a captured seed value
+    // -----------------------------------------------------------------------
+
+    [TestMethod]
+    public void EvaluatedExpression_ReadsFromQueryEntity_NotConstant()
+    {
+        var expr      = new RowStyleExpression<PlainModel>();
+        var different = new PlainModel { Value = 99 };
+
+        expr.FilterByProperty(nameof(PlainModel.Value), 5, OperationOperatorEnum.Equals);
+
+        // Expression is x => x.Value == 5; evaluating against Value=99 → false
+        Assert.IsFalse(expr.EvaluatedExpression.Compile()(different));
+    }
+
+    // -----------------------------------------------------------------------
+    // LINQ integration — filters per row value
+    // -----------------------------------------------------------------------
+
+    [TestMethod]
+    public void EvaluatedExpression_CanBeUsedWithLinqWhere_FiltersCorrectly()
     {
         var expr = new RowStyleExpression<PlainModel>();
         var data = new[]
@@ -236,11 +305,44 @@ public class RowStyleExpressionTests
             new PlainModel { Value = 9 },
         };
 
-        // GreaterThan with equal values returns true (see bug notes above).
-        expr.FilterByProperty(data[0], nameof(PlainModel.Value), 5, OperationOperatorEnum.GreaterThan);
+        expr.FilterByProperty(nameof(PlainModel.Value), 5, OperationOperatorEnum.Equals);
         var matches = data.AsQueryable().Where(expr.EvaluatedExpression).ToList();
 
-        // All three rows match because the expression captures value1==value2 (5==5=true) as a constant.
-        Assert.AreEqual(3, matches.Count);
+        Assert.AreEqual(2, matches.Count);
+    }
+
+    [TestMethod]
+    public void EvaluatedExpression_CanBeUsedWithLinqWhere_NoMatchesReturnsEmpty()
+    {
+        var expr = new RowStyleExpression<PlainModel>();
+        var data = new[]
+        {
+            new PlainModel { Value = 5 },
+            new PlainModel { Value = 5 },
+            new PlainModel { Value = 9 },
+        };
+
+        expr.FilterByProperty(nameof(PlainModel.Value), 99, OperationOperatorEnum.Equals);
+        var matches = data.AsQueryable().Where(expr.EvaluatedExpression).ToList();
+
+        Assert.AreEqual(0, matches.Count);
+    }
+
+    [TestMethod]
+    public void EvaluatedExpression_GreaterThan_FiltersRowsCorrectly()
+    {
+        var expr = new RowStyleExpression<PlainModel>();
+        var data = new[]
+        {
+            new PlainModel { Value = 3 },
+            new PlainModel { Value = 7 },
+            new PlainModel { Value = 12 },
+        };
+
+        // x => x.Value > 5 → matches 7 and 12
+        expr.FilterByProperty(nameof(PlainModel.Value), 5, OperationOperatorEnum.GreaterThan);
+        var matches = data.AsQueryable().Where(expr.EvaluatedExpression).ToList();
+
+        Assert.AreEqual(2, matches.Count);
     }
 }

@@ -9,7 +9,14 @@ public class SpreadSheet : ImportDocument
 {
     readonly IList<SheetRow> _rows = new List<SheetRow>();
 
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public SpreadSheet() { }
+
+    /// <summary>
+    /// Constructor.
+    /// </summary>
     public SpreadSheet(IBrowserFile file)
     {
         Size = file.Size;

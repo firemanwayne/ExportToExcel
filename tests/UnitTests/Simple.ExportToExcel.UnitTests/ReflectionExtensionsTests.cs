@@ -30,13 +30,11 @@ public class ReflectionExtensionsTests
     }
 
     [TestMethod]
-    public void IsList_IListProperty_ReturnsFalse()
+    public void IsList_IListProperty_ReturnsTrue()
     {
-        // IsList has a known logic bug: the final check compares IList<> == IEnumerable<>
-        // which is always false, so IList<T> properties return false.
         PropertyInfo prop = typeof(ListPropertyModel).GetProperty(nameof(ListPropertyModel.Items))!;
 
-        Assert.IsFalse(prop.IsList());
+        Assert.IsTrue(prop.IsList());
     }
 
     [TestMethod]

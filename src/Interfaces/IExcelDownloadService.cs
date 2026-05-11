@@ -3,7 +3,7 @@
 /// <summary>
 /// Download exported excel File to the browser
 /// </summary>
-internal interface IExcelDownloadService : IAsyncDisposable
+public interface IExcelDownloadService : IAsyncDisposable
 {
     /// <summary>
     /// Triggers a file download in the browser based on the type of <see cref="UploadResponse"/>.

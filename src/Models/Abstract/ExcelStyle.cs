@@ -7,18 +7,17 @@
 /// </summary>
 public abstract class ExcelStyle
 {
-    static readonly IDictionary<short, ExcelColors> _colors = new Dictionary<short, ExcelColors>();
+    static readonly IDictionary<short, ExcelColors> _colors;
+
+    static ExcelStyle()
+    {
+        _colors = new Dictionary<short, ExcelColors>(ExcelColors.ColorCollection);
+    }
 
     /// <summary>
-    /// Initializes the shared color palette from <see cref="ExcelColors.ColorCollection"/>.
+    /// Initializes a new instance of <see cref="ExcelStyle"/>.
     /// </summary>
-    public ExcelStyle()
-    {
-        foreach (KeyValuePair<short, ExcelColors> item in ExcelColors.ColorCollection)
-        {
-            _colors.TryAdd(item.Key, item.Value);
-        }
-    }
+    public ExcelStyle() { }
 
     /// <summary>
     /// The full catalogue of available spreadsheet colors, keyed by NPOI palette index.

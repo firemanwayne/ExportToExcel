@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 
 namespace Simple.ExportToExcel;
 
@@ -27,60 +27,51 @@ public class RowStyleExpression<T>
     public RowStyle FalseStyleResult { get; set; }
 
     /// <summary>
-    /// Evaluates the specified property of <paramref name="entity"/> against <paramref name="valueToCompare"/>
-    /// using the given <paramref name="filterOperator"/> and stores the resulting expression.
+    /// Builds a LINQ expression that evaluates the specified property of each <typeparamref name="T"/>
+    /// instance against <paramref name="valueToCompare"/> using the given <paramref name="filterOperator"/>.
+    /// Supported property types: <see cref="int"/>, <see cref="long"/>, <see cref="double"/>,
+    /// <see cref="float"/>, <see cref="decimal"/>, <see cref="DateTime"/>, <see cref="string"/>,
+    /// <see cref="bool"/>. String and bool only support <see cref="OperationOperatorEnum.Equals"/>.
     /// </summary>
-    /// <param name="entity">The entity instance to evaluate.</param>
     /// <param name="propertyName">Name of the property on <typeparamref name="T"/> to compare.</param>
-    /// <param name="valueToCompare">The value to compare the property against.</param>
+    /// <param name="valueToCompare">The constant value to compare the property against.</param>
     /// <param name="filterOperator">The comparison operator to apply.</param>
-    public void FilterByProperty(T entity, string propertyName, object valueToCompare, OperationOperatorEnum filterOperator)
+    public void FilterByProperty(string propertyName, object valueToCompare, OperationOperatorEnum filterOperator)
     {
-        object value = entity.GetType().GetProperty(propertyName).GetValue(entity, null);
+        PropertyInfo prop = typeof(T).GetProperty(propertyName);
+        if (prop == null) return;
 
-        if (value is int int1 && valueToCompare is int int2)
-        {
-            EvaluatedExpression = x => EvaluateIntegers(int1, int2, filterOperator);
-        }
-        else if (value is DateTime time && valueToCompare is DateTime time1)
-        {
-            EvaluatedExpression = x => EvaluateDates(time, time1, filterOperator);
-        }
+        ParameterExpression parameter = Expression.Parameter(typeof(T), "x");
+        MemberExpression member = Expression.Property(parameter, prop);
+
+        Expression body = BuildComparison(member, prop.PropertyType, valueToCompare, filterOperator);
+        if (body != null)
+            EvaluatedExpression = Expression.Lambda<Func<T, bool>>(body, parameter);
     }
 
-    static bool EvaluateDates(DateTime date1, DateTime date2, OperationOperatorEnum filterOperator)
+    static Expression BuildComparison(MemberExpression member, Type propType, object valueToCompare, OperationOperatorEnum op)
     {
-        if (filterOperator is OperationOperatorEnum.GreaterThan)
+        if (valueToCompare == null || valueToCompare.GetType() != propType)
+            return null;
+
+        ConstantExpression constant = Expression.Constant(valueToCompare, propType);
+
+        if (propType == typeof(string) || propType == typeof(bool))
+            return op == OperationOperatorEnum.Equals ? Expression.Equal(member, constant) : null;
+
+        if (propType == typeof(int)     || propType == typeof(long)    ||
+            propType == typeof(double)  || propType == typeof(float)   ||
+            propType == typeof(decimal) || propType == typeof(DateTime))
         {
-            return date1 == date2;
-        }
-        else if (filterOperator is OperationOperatorEnum.GreaterThan)
-        {
-            return date1 > date2;
-        }
-        else if (filterOperator is OperationOperatorEnum.GreaterThan)
-        {
-            return date1 < date2;
+            return op switch
+            {
+                OperationOperatorEnum.Equals      => Expression.Equal(member, constant),
+                OperationOperatorEnum.GreaterThan => Expression.GreaterThan(member, constant),
+                OperationOperatorEnum.LessThan    => Expression.LessThan(member, constant),
+                _ => null
+            };
         }
 
-        return false;
-    }
-
-    static bool EvaluateIntegers(int value1, int value2, OperationOperatorEnum filterOperator)
-    {
-        if (filterOperator is OperationOperatorEnum.GreaterThan)
-        {
-            return value1 == value2;
-        }
-        else if (filterOperator is OperationOperatorEnum.GreaterThan)
-        {
-            return value1 > value2;
-        }
-        else if (filterOperator is OperationOperatorEnum.GreaterThan)
-        {
-            return value1 < value2;
-        }
-
-        return false;
+        return null;
     }
 }

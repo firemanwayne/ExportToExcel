@@ -3,7 +3,7 @@
 /// <summary>
 /// Represents a file extension paired with its associated MIME type value.
 /// </summary>
-public struct Extension
+public struct Extension : IComparable<Extension>, IComparable
 {
     /// <summary>
     /// The file extension, including the leading dot (e.g. <c>.xlsx</c>).
@@ -25,4 +25,10 @@ public struct Extension
         Key = key;
         Value = value;
     }
+
+    /// <inheritdoc/>
+    public int CompareTo(Extension other) => string.Compare(Value, other.Value, StringComparison.Ordinal);
+
+    /// <inheritdoc/>
+    public int CompareTo(object obj) => obj is Extension other ? CompareTo(other) : 1;
 }

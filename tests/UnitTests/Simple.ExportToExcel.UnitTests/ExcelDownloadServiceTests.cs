@@ -6,6 +6,8 @@ namespace Simple.ExportToExcel.UnitTests;
 // Test doubles
 // ---------------------------------------------------------------------------
 
+file sealed record UnknownUploadResponse : UploadResponse { }
+
 file sealed class FakeJSObjectReference : IJSObjectReference
 {
     public List<(string Identifier, object?[]? Args)> Calls { get; } = [];
@@ -62,7 +64,7 @@ public class ExcelDownloadServiceTests
 
         await service.ExportFile(response);
 
-        Assert.AreEqual(1, js.Module.Calls.Count);
+        Assert.HasCount(1, js.Module.Calls);
         Assert.AreEqual("ExportFile", js.Module.Calls[0].Identifier);
     }
 
@@ -82,7 +84,7 @@ public class ExcelDownloadServiceTests
 
         var args = js.Module.Calls[0].Args!;
         Assert.AreEqual("report.xlsx", args[0]);
-        Assert.AreEqual("abc123",      args[1]);
+        Assert.AreEqual("abc123", args[1]);
         Assert.AreEqual(ExcelConstants.Excel, args[2]);
     }
 
@@ -100,7 +102,7 @@ public class ExcelDownloadServiceTests
 
         await service.ExportFile(response);
 
-        Assert.AreEqual(1, js.Module.Calls.Count);
+        Assert.HasCount(1, js.Module.Calls);
         Assert.AreEqual("ExportFileToUri", js.Module.Calls[0].Identifier);
     }
 
@@ -121,7 +123,7 @@ public class ExcelDownloadServiceTests
 
         var args = js.Module.Calls[0].Args!;
         Assert.AreEqual("report.xlsx", args[0]);
-        Assert.AreEqual(uri,           args[1]);
+        Assert.AreEqual(uri, args[1]);
     }
 
     [TestMethod]
@@ -139,7 +141,18 @@ public class ExcelDownloadServiceTests
         await service.ExportFile(response);
         await service.ExportFile(response);
 
-        Assert.AreEqual(2, js.Module.Calls.Count);
+        Assert.HasCount(2, js.Module.Calls);
+    }
+
+    [TestMethod]
+    public async Task ExportFile_WithUnknownResponseType_ThrowsArgumentException()
+    {
+        var js = new FakeJSRuntime();
+        var service = new ExcelDownloadService(js);
+        var response = new UnknownUploadResponse { FileName = "x.xlsx", ContentType = ExcelConstants.Excel };
+
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            service.ExportFile(response).AsTask());
     }
 
     [TestMethod]
